@@ -8,14 +8,72 @@
 
 import UIKit
 
+enum Suit : UInt8 {
+    case spades = 0
+    case clubs  = 1
+    case diamonds = 2
+    case hearts = 3
+}
+
+enum Rank : UInt8 {
+    case a = 1
+    case j = 11
+    case q = 12
+    case k = 13
+}
+
+//let ACE   : Character = "a"
+let ace   : UInt8 = 1
+let jack  : UInt8 = 11
+let queen : UInt8 = 12
+let king  : UInt8 = 13
+
+func ==(left: Card, right: Card) -> Bool {
+    return left.suit == right.suit && left.rank == right.rank
+}
+
+struct Card : Hashable {
+    
+    let suit : Suit  // .SPADES ... .HEARTS
+    let rank : UInt8 // 1 ... 13
+    var isCardFaceUp : Bool = true
+    
+    var hashValue: Int {
+        return Int(suit.rawValue*13 + rank - 1) // perfect hash to 0 ... 51
+    }
+    
+    init(suit s : Suit, rank r : UInt8) {
+        suit = s;
+        rank = r
+    }
+    
+    static func deck() -> [Card] {
+        var deckOfCards = [Card]()
+        
+        for s in 0 ..< 4 {
+            for r in 1 ... 13 {
+                deckOfCards.append(Card(suit: Suit(rawValue: UInt8(s))!, rank: UInt8(r)))
+            }
+        }
+        return deckOfCards
+    }
+    
+}
+
+
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var solitaire : Solitaire?
+    // var card : [Card] = []
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        solitaire = Solitaire()
+        
         return true
     }
 

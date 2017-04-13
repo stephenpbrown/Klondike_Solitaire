@@ -12,6 +12,9 @@
 		ACE758BF1EA0049C00ADA290 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ACE758BD1EA0049C00ADA290 /* Main.storyboard */; };
 		ACE758C11EA0049C00ADA290 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ACE758C01EA0049C00ADA290 /* Assets.xcassets */; };
 		ACE758C41EA0049C00ADA290 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ACE758C21EA0049C00ADA290 /* LaunchScreen.storyboard */; };
+		ACE758CE1EA00B1600ADA290 /* Solitaire.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACE758CD1EA00B1600ADA290 /* Solitaire.swift */; };
+		ACE758D01EA00CBB00ADA290 /* SolitaireView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACE758CF1EA00CBB00ADA290 /* SolitaireView.swift */; };
+		ACE758D21EA00F2800ADA290 /* 150 in Resources */ = {isa = PBXBuildFile; fileRef = ACE758D11EA00F2800ADA290 /* 150 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +25,9 @@
 		ACE758C01EA0049C00ADA290 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		ACE758C31EA0049C00ADA290 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ACE758C51EA0049C00ADA290 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ACE758CD1EA00B1600ADA290 /* Solitaire.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Solitaire.swift; sourceTree = "<group>"; };
+		ACE758CF1EA00CBB00ADA290 /* SolitaireView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SolitaireView.swift; sourceTree = "<group>"; };
+		ACE758D11EA00F2800ADA290 /* 150 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = 150; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,10 +62,13 @@
 			children = (
 				ACE758B91EA0049C00ADA290 /* AppDelegate.swift */,
 				ACE758BB1EA0049C00ADA290 /* ViewController.swift */,
+				ACE758CD1EA00B1600ADA290 /* Solitaire.swift */,
+				ACE758CF1EA00CBB00ADA290 /* SolitaireView.swift */,
 				ACE758BD1EA0049C00ADA290 /* Main.storyboard */,
 				ACE758C01EA0049C00ADA290 /* Assets.xcassets */,
 				ACE758C21EA0049C00ADA290 /* LaunchScreen.storyboard */,
 				ACE758C51EA0049C00ADA290 /* Info.plist */,
+				ACE758D11EA00F2800ADA290 /* 150 */,
 			);
 			path = Klondike_Solitaire;
 			sourceTree = "<group>";
@@ -124,6 +133,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ACE758C41EA0049C00ADA290 /* LaunchScreen.storyboard in Resources */,
+				ACE758D21EA00F2800ADA290 /* 150 in Resources */,
 				ACE758C11EA0049C00ADA290 /* Assets.xcassets in Resources */,
 				ACE758BF1EA0049C00ADA290 /* Main.storyboard in Resources */,
 			);
@@ -137,6 +147,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				ACE758BC1EA0049C00ADA290 /* ViewController.swift in Sources */,
+				ACE758D01EA00CBB00ADA290 /* SolitaireView.swift in Sources */,
+				ACE758CE1EA00B1600ADA290 /* Solitaire.swift in Sources */,
 				ACE758BA1EA0049C00ADA290 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
