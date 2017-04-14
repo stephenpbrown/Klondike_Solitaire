@@ -9,7 +9,7 @@
 import UIKit
 
 class CardLayer: CALayer {
-    let card : Card
+    var card : Card
     
     var faceUp : Bool {
         didSet {
@@ -62,7 +62,7 @@ class SolitaireView: UIView {
     var touchStartPoint : CGPoint = CGPoint.zero
     var touchStartLayerPosition : CGPoint = CGPoint.zero
     
-    var maxZ : CGFloat = 0
+    let FAN_OFFSET = CGFloat(1)
     
     lazy var solitaire : Solitaire!  = { // reference to model in app delegate
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -80,11 +80,10 @@ class SolitaireView: UIView {
         //    ... create and add waste, foundation, and tableau sublayers ...
         
         let deck = Card.deck() // deck of poker cards
-        //let deck = deck()
         cardToLayerDictionary = [:]
         
-        var x : CGFloat = 50
-        var y : CGFloat = 50
+        var x : CGFloat = 200
+        var y : CGFloat = 100
         var z : CGFloat = 0
         for card in deck {
             let cardLayer = CardLayer(card: card)
@@ -98,13 +97,75 @@ class SolitaireView: UIView {
             self.layer.addSublayer(cardLayer)
             cardToLayerDictionary[card] = cardLayer
             
-            x = x + 5
+            //x = x + 5
             y = y + 5
         }
-        maxZ = z
+        topZPosition = z
     }
     
-    // var touchLayer : CALayer? = nil // Layer currently getting drag
+    override func layoutSublayers(of layer: CALayer) {
+        draggingCardLayer = nil // deactivate any dragging
+        //layoutTableAndCards()
+    }
+    
+//    func layoutSublayersOfLayer(layer: CALayer) {
+//        draggingCardLayer = nil // deactivate any dragging
+//        layoutTableAndCards()
+//    }
+    
+    func layoutTableAndCards() {
+        let width = bounds.size.width
+        let height = bounds.size.height
+        let portrait = width < height
+        
+        //... determine size and position of stock, waste, foundation and tableau layers ...
+        
+        layoutCards()
+    }
+    
+    func layoutCards() {
+        var z : CGFloat = 1.0
+        let stock = solitaire.stock
+        for card in stock {
+            let cardLayer = cardToLayerDictionary[card]!
+            cardLayer.frame = stockLayer.frame
+            cardLayer.faceUp = solitaire.isCardFaceUp(card: card)
+            z += 1.0
+            cardLayer.zPosition = z
+        }
+        
+        //... layout cards in waste and foundation stacks ...
+        
+        let cardSize = stockLayer.bounds.size
+        let fanOffset = FAN_OFFSET * cardSize.height
+        for i in 0 ..< 7 {
+            let tableau = solitaire.tableau[i]
+            let tableauOrigin = tableauLayers[i].frame.origin
+            var j : CGFloat = 0
+            for card in tableau {
+                let cardLayer = cardToLayerDictionary[card]!
+                cardLayer.frame =
+                    CGRect(x: tableauOrigin.x, y: tableauOrigin.y + j*fanOffset,
+                           width: cardSize.width, height: cardSize.height)
+                cardLayer.faceUp = solitaire.isCardFaceUp(card: card)
+                z += 1.0
+                cardLayer.zPosition = z
+                j = j + 1.0
+            }
+        }
+        topZPosition = z  // remember "highest position"
+    }
+    
+    func moveToUpperLeft(_ clayer : CALayer) {
+        let moveAnimation = CABasicAnimation(keyPath: "position")
+        moveAnimation.duration = 0.1
+        moveAnimation.fromValue = NSValue(cgPoint: clayer.position)
+        let pos = CGPoint(x: 50, y: 50)
+        moveAnimation.toValue = NSValue(cgPoint: pos)
+        clayer.position = pos
+        clayer.add(moveAnimation, forKey: "don't care") // You can give animation a key in order to kill it, etc
+    }
+
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch = touches.first!
@@ -118,16 +179,23 @@ class SolitaireView: UIView {
                 if solitaire.isCardFaceUp(card: card) {
                     //...if tap count > 1 move to foundation if allowed...
                     if touch.tapCount > 1 {
-                        
+                        moveToUpperLeft(cardLayer)
+                        return
                     }
                     //...else initiate drag of card (or stack of cards) by setting
                     else {
                         touchStartPoint = touchPoint
-                        draggingCardLayer = cardToLayerDictionary[card]
-                        //draggingCardLayer?.zPosition = maxZ
-                        //maxZ = maxZ + 1
-                        touchStartLayerPosition = (cardToLayerDictionary[card]?.position)!
-                        draggingCardLayer?.transform = CATransform3DIdentity
+                        
+                        // TODO: Fix z position error
+//                        cardLayer.zPosition = topZPosition
+//                        topZPosition = topZPosition + 1
+                        
+                        touchStartLayerPosition = cardLayer.position
+                        cardLayer.transform = CATransform3DIdentity
+                        draggingCardLayer = cardLayer
+//                        draggingCardLayer!.zPosition = topZPosition
+//                        topZPosition += 1
+                        
                     }
                     // draggingCardLayer, and (possibly) draggingFan...
                 } else if solitaire.canFlipCard(card: card) {
@@ -143,8 +211,6 @@ class SolitaireView: UIView {
     
     
     func dragCardsToPosition(position : CGPoint, animate : Bool) {
-        let FAN_OFFSET = CGFloat(1)
-        
         if !animate {
             CATransaction.begin()
             CATransaction.setDisableActions(true)
