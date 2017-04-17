@@ -129,7 +129,7 @@ class SolitaireView: UIView {
         for card in stock {
             let cardLayer = cardToLayerDictionary[card]!
             cardLayer.frame = stockLayer.frame
-            cardLayer.faceUp = solitaire.isCardFaceUp(card: card)
+            cardLayer.faceUp = solitaire.isCardFaceUp(card)
             z += 1.0
             cardLayer.zPosition = z
         }
@@ -147,7 +147,7 @@ class SolitaireView: UIView {
                 cardLayer.frame =
                     CGRect(x: tableauOrigin.x, y: tableauOrigin.y + j*fanOffset,
                            width: cardSize.width, height: cardSize.height)
-                cardLayer.faceUp = solitaire.isCardFaceUp(card: card)
+                cardLayer.faceUp = solitaire.isCardFaceUp(card)
                 z += 1.0
                 cardLayer.zPosition = z
                 j = j + 1.0
@@ -176,7 +176,7 @@ class SolitaireView: UIView {
             if layer.name == "card" {
                 let cardLayer = layer as! CardLayer
                 let card = cardLayer.card
-                if solitaire.isCardFaceUp(card: card) {
+                if solitaire.isCardFaceUp(card) {
                     //...if tap count > 1 move to foundation if allowed...
                     if touch.tapCount > 1 {
                         moveToUpperLeft(cardLayer)
@@ -198,7 +198,7 @@ class SolitaireView: UIView {
                         
                     }
                     // draggingCardLayer, and (possibly) draggingFan...
-                } else if solitaire.canFlipCard(card: card) {
+                } else if solitaire.canFlipCard(card) {
                     // flipCard(card, faceUp: true) // update model & view
                 } else if solitaire.stock.last == card {
                     // dealCardsFromStockToWaste();
