@@ -33,7 +33,8 @@ class CardLayer: CALayer {
     }
     
     required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
+        // fatalError("init(coder:) has not been implemented")
     }
 }
 
@@ -183,6 +184,7 @@ class SolitaireView: UIView {
                         return
                     }
                     //...else initiate drag of card (or stack of cards) by setting
+                    // draggingCardLayer, and (possibly) draggingFan...
                     else {
                         touchStartPoint = touchPoint
                         
@@ -193,11 +195,14 @@ class SolitaireView: UIView {
                         touchStartLayerPosition = cardLayer.position
                         cardLayer.transform = CATransform3DIdentity
                         draggingCardLayer = cardLayer
-//                        draggingCardLayer!.zPosition = topZPosition
-//                        topZPosition += 1
+                        
+                        // XXX
+                        draggingCardLayer!.zPosition = topZPosition
+                        topZPosition += 1
+                        // XXX
                         
                     }
-                    // draggingCardLayer, and (possibly) draggingFan...
+                    
                 } else if solitaire.canFlipCard(card) {
                     // flipCard(card, faceUp: true) // update model & view
                 } else if solitaire.stock.last == card {
