@@ -94,6 +94,7 @@ class SolitaireView: UIView {
     
     override func awakeFromNib() {
         self.layer.name = "background"
+        
         stockLayer = CALayer()
         stockLayer.name = "stock"
         stockLayer.backgroundColor =
@@ -133,7 +134,6 @@ class SolitaireView: UIView {
             self.layer.addSublayer(cardLayer)
             cardToLayerDictionary[card] = cardLayer
         }
-        //topZPosition = z
     }
     
     override func layoutSublayers(of layer: CALayer) {
@@ -233,6 +233,7 @@ class SolitaireView: UIView {
                 x += 135
             }
         }
+        // Is an iPhone and in landscape mode
         else
         {
             let cardSize = (width: 150/3, height: 215/3)
@@ -278,15 +279,32 @@ class SolitaireView: UIView {
         
         //... layout cards in waste and foundation stacks ...
         let waste = solitaire.waste
+        z = 1.0
         for card in waste {
             let cardLayer = cardToLayerDictionary[card]!
-            cardLayer.frame = stockLayer.frame
+            cardLayer.frame = wasteLayer.frame
             cardLayer.faceUp = solitaire.isCardFaceUp(card)
             cardLayer.zPosition = z
             z += 1.0
         }
         
         let cardSize = stockLayer.bounds.size
+        for i in 0 ..< 4 {
+            let foundation = solitaire.foundation[i]
+            let foundationOrigin = foundationLayers[i].frame.origin
+            var j : CGFloat = 0
+            for card in foundation {
+                let cardLayer = cardToLayerDictionary[card]!
+                cardLayer.frame =
+                    CGRect(x: foundationOrigin.x, y: foundationOrigin.y + 50*j,
+                           width: cardSize.width, height: cardSize.height)
+                cardLayer.faceUp = solitaire.isCardFaceUp(card)
+                cardLayer.zPosition = z
+                z += 1.0
+                j += 1.0
+            }
+        }
+
         let fanOffset = FAN_OFFSET * cardSize.height
         for i in 0 ..< 7 {
             let tableau = solitaire.tableau[i]
@@ -341,19 +359,38 @@ class SolitaireView: UIView {
                         draggingCardLayer = cardLayer
                         draggingCardLayer!.zPosition = topZPosition
                         topZPosition += 1
+                        
+                        // TODO: Check for draggingFan
                     }
                     
                 } else if solitaire.canFlipCard(card) {
-                    // flipCard(card, faceUp: true) // update model & view
-                } else if solitaire.stock.last == card {
-                    // dealCardsFromStockToWaste();
+                    flipCard(card, faceUp: true) // update model & view
                 }
+//                else if solitaire.stock.last == card {
+//                    
+//                }
+
             } else if (layer.name == "stock") {
-                // collectWasteCardsIntoStock()
+                solitaire.collectWasteCardsIntoStock()
+                layoutCards()
             }
         }
     }
     
+    func flipCard(_ card : Card, faceUp : Bool) {
+        
+        if solitaire.stock.contains(card) {
+            solitaire.stockToWaste(card)
+        }
+        else if solitaire.foundation.contains(where: { $0 == [card]}) {
+            // XXX
+        }
+        else {
+            solitaire.flipFoundationCard(card)
+        }
+        
+        layoutCards()
+    }
     
     func dragCardsToPosition(position : CGPoint, animate : Bool) {
         if !animate {
@@ -389,25 +426,26 @@ class SolitaireView: UIView {
             touchLayer.position = pos
             CATransaction.commit()
             
-            //dragCardsToPosition(position: pos, animate: false)
+            dragCardsToPosition(position: pos, animate: false)
         }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         draggingCardLayer = nil
-//        if let dragLayer = draggingCardLayer {
-            //if dragging only one card {
-                //... determine where the user is trying to drop the card
-                //... determine if this is a valid/legal drop
-                //... if so, update model and view
-                //... else put card back from whence it came
-            //} else { // fan of cards (can only drop on tableau stack)
-                //... determine if valid/legal drop
-                //... if so, update model and view
-                //... else put cards back from whence they came
-            //}
+        if let dragLayer = draggingCardLayer {
+            
+//            if dragLayer. {
+//                ... determine where the user is trying to drop the card
+//                ... determine if this is a valid/legal drop
+//                ... if so, update model and view
+//                ... else put card back from whence it came
+//            } else { // fan of cards (can only drop on tableau stack)
+//                ... determine if valid/legal drop
+//                ... if so, update model and view
+//                ... else put cards back from whence they came
+//            }
 //            draggingCardLayer = nil
-//        }
+        }
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {

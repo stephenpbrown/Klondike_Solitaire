@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		ACA012161EA53BA900B89EFD /* Solitaire.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA012151EA53BA900B89EFD /* Solitaire.swift */; };
 		ACE758BA1EA0049C00ADA290 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACE758B91EA0049C00ADA290 /* AppDelegate.swift */; };
-		ACE758BC1EA0049C00ADA290 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACE758BB1EA0049C00ADA290 /* ViewController.swift */; };
 		ACE758BF1EA0049C00ADA290 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ACE758BD1EA0049C00ADA290 /* Main.storyboard */; };
 		ACE758C11EA0049C00ADA290 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ACE758C01EA0049C00ADA290 /* Assets.xcassets */; };
 		ACE758C41EA0049C00ADA290 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ACE758C21EA0049C00ADA290 /* LaunchScreen.storyboard */; };
@@ -21,7 +20,6 @@
 		ACA012151EA53BA900B89EFD /* Solitaire.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Solitaire.swift; path = ../Solitaire.swift; sourceTree = "<group>"; };
 		ACE758B61EA0049C00ADA290 /* Klondike_Solitaire.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Klondike_Solitaire.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ACE758B91EA0049C00ADA290 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		ACE758BB1EA0049C00ADA290 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		ACE758BE1EA0049C00ADA290 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		ACE758C01EA0049C00ADA290 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		ACE758C31EA0049C00ADA290 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -61,7 +59,6 @@
 			isa = PBXGroup;
 			children = (
 				ACE758B91EA0049C00ADA290 /* AppDelegate.swift */,
-				ACE758BB1EA0049C00ADA290 /* ViewController.swift */,
 				ACA012151EA53BA900B89EFD /* Solitaire.swift */,
 				ACE758CF1EA00CBB00ADA290 /* SolitaireView.swift */,
 				ACE758BD1EA0049C00ADA290 /* Main.storyboard */,
@@ -147,7 +144,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ACE758BC1EA0049C00ADA290 /* ViewController.swift in Sources */,
 				ACE758D01EA00CBB00ADA290 /* SolitaireView.swift in Sources */,
 				ACA012161EA53BA900B89EFD /* Solitaire.swift in Sources */,
 				ACE758BA1EA0049C00ADA290 /* AppDelegate.swift in Sources */,

@@ -62,20 +62,21 @@ class Solitaire {
         foundation.remove(at: 0)
         
         // Figure out which cards go into the tableau
-        for c in 0 ..< 7 {
-            for r in 0 ... c {
-                randomIndex = Int(arc4random_uniform(UInt32(setRegions.count)))
-                
-                // http://stackoverflow.com/questions/28163034/how-to-properly-declare-array-of-custom-objects-in-swift
-                tableau.append([])
-                tableau[c].append(setRegions[randomIndex])
+        for r in 0 ..< 7 {
+            tableau.append([])
+            for c in 0 ... r {
+                tableau[r].append(setRegions.first!)
                 
                 // Set bottom cards face up
                 if r == c {
-                    faceUpCards.insert(setRegions[randomIndex])
+                    faceUpCards.insert(setRegions.first!)
                 }
-                setRegions.remove(at: randomIndex)
+                setRegions.removeFirst()
             }
+        }
+        
+        for _ in 0 ..< 4 {
+            foundation.append([])
         }
         
         // The rest of the cards go into the stock
@@ -91,7 +92,7 @@ class Solitaire {
         
     }
 
-    // All cards have successfully reached a foundation stack. func isCardFaceUp(_ card : Card) -> Bool Is given card face up?
+    // All cards have successfully reached a foundation stack.
     func gameWon() -> Bool {
         return false
     }
@@ -139,6 +140,26 @@ class Solitaire {
     
     // Can user legally flip the card over?
     func canFlipCard(_ card : Card) -> Bool {
+        
+        if card == stock.last {
+            return true
+        }
+        
+//        for i in 0 ..< 7 {
+//            var tableaui = tableau[i].first
+//            if card == tableaui {
+//                return true
+//            }
+//        }
+        
+        for r in 0 ..< 7 {
+            for c in 0 ... r {
+                if card == tableau[r][c] {
+                    return true
+                }
+            }
+        }
+        
         return false
     }
     
@@ -157,9 +178,25 @@ class Solitaire {
         
     }
     
+    func flipFoundationCard(_ card: Card) {
+        faceUpCards.insert(card)
+    }
+    
+    func stockToWaste(_ card: Card) {
+        waste.append(card)
+        faceUpCards.insert(card)
+        stock.removeLast()
+    }
+    
     // Move all waste cards back to the stock (they’re all flipped over – order is maintained).
     func collectWasteCardsIntoStock() {
+        for card in waste {
+            stock.append(card)
+            faceUpCards.remove(card)
+            waste.removeFirst()
+        }
         
+        stock.reverse()
     }
 
 }
