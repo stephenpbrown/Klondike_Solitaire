@@ -14,7 +14,7 @@ class Solitaire {
     var waste : [Card]
     var foundation : [[Card]]
     var tableau : [[Card]]
-    private var faceUpCards : Set<Card>;
+    fileprivate var faceUpCards : Set<Card>;
     
 //    init(dictionary dict : [String : AnyObject]) { // for retrieving from plist
 //        //... 
@@ -28,9 +28,60 @@ class Solitaire {
     init() {
         stock = []
         waste = []
-        foundation = [[]]
-        tableau = [[]]
+        foundation = [[]] //Array(repeating: [Card](), count: 52)
+        
+        self.tableau = [[]] //Array(repeating: [Card](), count: 52)
+            
         faceUpCards = []
+    }
+    
+    // Takes deck of cards and then randomly reorders (shuffles) them
+    func dealCards() -> [Card] {
+        var deckOfCards = [Card]()
+        
+        for s in 0 ..< 4 {
+            for r in 1 ... 13 {
+                deckOfCards.append(Card(suit: Suit(rawValue: UInt8(s))!, rank: UInt8(r)))
+            }
+        }
+        
+        var shuffledDeck = [Card]()
+        var randomIndex = 0
+        
+        // Shuffles the deck of cards
+        for _ in 0 ..< 52 {
+            randomIndex = Int(arc4random_uniform(UInt32(deckOfCards.count)))
+            shuffledDeck.append(deckOfCards[randomIndex])
+            deckOfCards.remove(at: randomIndex)
+        }
+        
+        var setRegions = shuffledDeck
+        
+        // TODO: Figure out why these contain an empty object on initialization
+        tableau.remove(at: 0)
+        foundation.remove(at: 0)
+        
+        // Figure out which cards go into the tableau
+        for c in 0 ..< 7 {
+            for r in 0 ... c {
+                randomIndex = Int(arc4random_uniform(UInt32(setRegions.count)))
+                tableau.append([setRegions[randomIndex]])
+                
+                // Set bottom cards face up
+                if r == c {
+                    // XXX
+                }
+                
+                setRegions.remove(at: randomIndex)
+            }
+        }
+        
+        // The rest of the cards go into the stock
+        for card in setRegions {
+            stock.append(card)
+        }
+        
+        return shuffledDeck
     }
     
     // Reshuffle and redeal cards to start a new game.

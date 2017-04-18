@@ -26,26 +26,48 @@ class CardLayer: CALayer {
     init(card : Card) {
         self.card = card
         faceUp = true
-        frontImage = UIImage(named: imageForCard(card))! // load associated image from main bundle
+        frontImage = imageForCard(card) // load associated image from main bundle
         super.init()
         self.contents = frontImage.cgImage
         self.contentsGravity = kCAGravityResizeAspect
     }
     
+    //
+    // Professor Cochran helped me solve the issue where the program would throw an error because I
+    // wasn't handling the initializers properly
+    //
+    override init(layer: Any) {
+        if let layer = layer as? Card {
+            card = Card(suit: layer.suit, rank: layer.rank)
+            faceUp = true
+            frontImage = imageForCard(card)
+        }
+        else {
+            card = Card(suit: Suit.spades, rank: ace)
+            faceUp = true
+            frontImage = imageForCard(card)
+        }
+        super.init(layer: layer)
+        self.contents = frontImage.cgImage
+        self.contentsGravity = kCAGravityResizeAspect
+    }
+    
     required init?(coder aDecoder: NSCoder) {
+        card = Card(suit: Suit.spades, rank: ace)
+        faceUp = true
+        frontImage = imageForCard(card)
         super.init(coder: aDecoder)
-        // fatalError("init(coder:) has not been implemented")
     }
 }
 
-func imageForCard(_ card : Card) -> String {
+func imageForCard(_ card : Card) -> UIImage {
     
     let ranks = ["", "a", "2", "3", "4", "5", "6", "7", "8", "9", "10", "j", "q", "k"]
     let ranksIndex = Int(card.rank)
     
     let imageName = "\(card.suit)-\(ranks[ranksIndex])-150"
     
-    return imageName
+    return UIImage(named: imageName)!
 }
 
 class SolitaireView: UIView {
@@ -99,20 +121,20 @@ class SolitaireView: UIView {
             cardToLayerDictionary[card] = cardLayer
             
             //x = x + 5
-            y = y + 5
+            y = y + 10
         }
         topZPosition = z
     }
     
     override func layoutSublayers(of layer: CALayer) {
         draggingCardLayer = nil // deactivate any dragging
-        //layoutTableAndCards()
+        layoutTableAndCards()
     }
     
-//    func layoutSublayersOfLayer(layer: CALayer) {
-//        draggingCardLayer = nil // deactivate any dragging
-//        layoutTableAndCards()
-//    }
+    func layoutSublayersOfLayer(layer: CALayer) {
+        draggingCardLayer = nil // deactivate any dragging
+        layoutTableAndCards()
+    }
     
     func layoutTableAndCards() {
         let width = bounds.size.width
@@ -121,7 +143,7 @@ class SolitaireView: UIView {
         
         //... determine size and position of stock, waste, foundation and tableau layers ...
         
-        layoutCards()
+        // layoutCards()
     }
     
     func layoutCards() {
@@ -131,8 +153,8 @@ class SolitaireView: UIView {
             let cardLayer = cardToLayerDictionary[card]!
             cardLayer.frame = stockLayer.frame
             cardLayer.faceUp = solitaire.isCardFaceUp(card)
-            z += 1.0
             cardLayer.zPosition = z
+            z += 1.0
         }
         
         //... layout cards in waste and foundation stacks ...
@@ -149,9 +171,9 @@ class SolitaireView: UIView {
                     CGRect(x: tableauOrigin.x, y: tableauOrigin.y + j*fanOffset,
                            width: cardSize.width, height: cardSize.height)
                 cardLayer.faceUp = solitaire.isCardFaceUp(card)
-                z += 1.0
                 cardLayer.zPosition = z
-                j = j + 1.0
+                z += 1.0
+                j += 1.0
             }
         }
         topZPosition = z  // remember "highest position"
@@ -187,20 +209,11 @@ class SolitaireView: UIView {
                     // draggingCardLayer, and (possibly) draggingFan...
                     else {
                         touchStartPoint = touchPoint
-                        
-                        // TODO: Fix z position error
-//                        cardLayer.zPosition = topZPosition
-//                        topZPosition = topZPosition + 1
-                        
                         touchStartLayerPosition = cardLayer.position
                         cardLayer.transform = CATransform3DIdentity
                         draggingCardLayer = cardLayer
-                        
-                        // XXX
                         draggingCardLayer!.zPosition = topZPosition
                         topZPosition += 1
-                        // XXX
-                        
                     }
                     
                 } else if solitaire.canFlipCard(card) {

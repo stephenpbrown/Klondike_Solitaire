@@ -36,7 +36,6 @@ struct Card : Hashable {
     
     let suit : Suit  // .SPADES ... .HEARTS
     let rank : UInt8 // 1 ... 13
-    var isCardFaceUp : Bool = true
     
     var hashValue: Int {
         return Int(suit.rawValue*13 + rank - 1) // perfect hash to 0 ... 51
@@ -48,14 +47,8 @@ struct Card : Hashable {
     }
     
     static func deck() -> [Card] {
-        var deckOfCards = [Card]()
-        
-        for s in 0 ..< 4 {
-            for r in 1 ... 13 {
-                deckOfCards.append(Card(suit: Suit(rawValue: UInt8(s))!, rank: UInt8(r)))
-            }
-        }
-        return deckOfCards
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        return (appDelegate.solitaire?.dealCards())!
     }
     
 }
