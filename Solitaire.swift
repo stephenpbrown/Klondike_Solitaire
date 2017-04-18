@@ -65,13 +65,13 @@ class Solitaire {
         for r in 0 ..< 7 {
             tableau.append([])
             for c in 0 ... r {
-                tableau[r].append(setRegions.first!)
+                tableau[r].append(setRegions.last!)
                 
                 // Set bottom cards face up
                 if r == c {
-                    faceUpCards.insert(setRegions.first!)
+                    faceUpCards.insert(setRegions.last!)
                 }
-                setRegions.removeFirst()
+                setRegions.removeLast()
             }
         }
         
@@ -94,7 +94,7 @@ class Solitaire {
 
     // All cards have successfully reached a foundation stack.
     func gameWon() -> Bool {
-        return false
+        return foundation.count == 52
     }
     
     // Checks to see if the card is facing up
@@ -108,18 +108,12 @@ class Solitaire {
         return []
     }
     
-    // Can the given cards be legally dropped on the ith foundation?
-    func canDropCard(_ card : Card, onFoundation i : Int) -> Bool {
-        return false
-    }
-    
-    // The user did drop the given card on on the ith foundation.
-    func didDropCard(_ card : Card, onFoundation i : Int) {
-        
-    }
-    
     // Can the given card be legally dropped on the ith tableau?
     func canDropCard(_ card : Card, onTableau i : Int) -> Bool {
+        var lowerCard = tableau[i]
+        
+        // TODO: Continue from here implementing tableau
+        
         return false
     }
     
@@ -144,13 +138,6 @@ class Solitaire {
         if card == stock.last {
             return true
         }
-        
-//        for i in 0 ..< 7 {
-//            var tableaui = tableau[i].first
-//            if card == tableaui {
-//                return true
-//            }
-//        }
         
         for r in 0 ..< 7 {
             for c in 0 ... r {
@@ -178,7 +165,7 @@ class Solitaire {
         
     }
     
-    func flipFoundationCard(_ card: Card) {
+    func flipTableauCard(_ card: Card) {
         faceUpCards.insert(card)
     }
     

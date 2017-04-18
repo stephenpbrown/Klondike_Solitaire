@@ -386,7 +386,7 @@ class SolitaireView: UIView {
             // XXX
         }
         else {
-            solitaire.flipFoundationCard(card)
+            solitaire.flipTableauCard(card)
         }
         
         layoutCards()
@@ -431,10 +431,13 @@ class SolitaireView: UIView {
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        draggingCardLayer = nil
         if let dragLayer = draggingCardLayer {
-            
-//            if dragLayer. {
+            for i in 0 ..< 7 {
+                if tableauLayers[i].frame.intersects(dragLayer.frame) {
+                    var canDropCard = solitaire.canDropCard(dragLayer.card, onTableau: i)
+                    break
+                }
+            }
 //                ... determine where the user is trying to drop the card
 //                ... determine if this is a valid/legal drop
 //                ... if so, update model and view
@@ -444,7 +447,7 @@ class SolitaireView: UIView {
 //                ... if so, update model and view
 //                ... else put cards back from whence they came
 //            }
-//            draggingCardLayer = nil
+            draggingCardLayer = nil
         }
     }
     
