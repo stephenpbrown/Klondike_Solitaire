@@ -85,7 +85,7 @@ class SolitaireView: UIView {
     var touchStartPoint : CGPoint = CGPoint.zero
     var touchStartLayerPosition : CGPoint = CGPoint.zero
     
-    let FAN_OFFSET = CGFloat(1)
+    let FAN_OFFSET = CGFloat(0.2)
     
     lazy var solitaire : Solitaire!  = { // reference to model in app delegate
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -101,37 +101,42 @@ class SolitaireView: UIView {
         self.layer.addSublayer(stockLayer)
             
         //    ... create and add waste, foundation, and tableau sublayers ...
+        wasteLayer = CALayer()
+        wasteLayer.name = "waste"
+        wasteLayer.backgroundColor =
+            UIColor(colorLiteralRed: 0.0, green: 0.5, blue: 0.0, alpha: 0.3).cgColor
+        self.layer.addSublayer(wasteLayer)
+        
+        tableauLayers = []
+        for i in 0 ..< 7 {
+            tableauLayers.append(CALayer())
+            tableauLayers[i].name = "tableau"
+            tableauLayers[i].backgroundColor =
+                UIColor(colorLiteralRed: 0.0, green: 0.5, blue: 0.0, alpha: 0.3).cgColor
+            self.layer.addSublayer(tableauLayers[i])
+        }
+        
+        foundationLayers = []
+        for i in 0 ..< 4 {
+            foundationLayers.append(CALayer())
+            foundationLayers[i].name = "foundation"
+            foundationLayers[i].backgroundColor =
+                UIColor(colorLiteralRed: 0.0, green: 0.5, blue: 0.0, alpha: 0.3).cgColor
+            self.layer.addSublayer(foundationLayers[i])
+        }
         
         let deck = Card.deck() // deck of poker cards
         cardToLayerDictionary = [:]
-        
-        var x : CGFloat = 200
-        var y : CGFloat = 100
-        var z : CGFloat = 0
         for card in deck {
             let cardLayer = CardLayer(card: card)
-
-            cardLayer.bounds = CGRect(x: 0, y: 0, width: 150/3, height: 215/3)
-            cardLayer.position = CGPoint(x: x, y: y)
-            cardLayer.zPosition = z
-            z = z + 1
-            
             cardLayer.name = "card"
             self.layer.addSublayer(cardLayer)
             cardToLayerDictionary[card] = cardLayer
-            
-            //x = x + 5
-            y = y + 10
         }
-        topZPosition = z
+        //topZPosition = z
     }
     
     override func layoutSublayers(of layer: CALayer) {
-        draggingCardLayer = nil // deactivate any dragging
-        layoutTableAndCards()
-    }
-    
-    func layoutSublayersOfLayer(layer: CALayer) {
         draggingCardLayer = nil // deactivate any dragging
         layoutTableAndCards()
     }
@@ -143,7 +148,63 @@ class SolitaireView: UIView {
         
         //... determine size and position of stock, waste, foundation and tableau layers ...
         
-        // layoutCards()
+        if portrait {
+            let cardSize = (width: 150/4, height: 215/4)
+            
+            // Stock layer position
+            stockLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
+            stockLayer.position = CGPoint(x: 50, y: 50)
+            
+            // Waste layer position
+            wasteLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
+            wasteLayer.position = CGPoint(x: 100, y: 50)
+            
+            // Foundation layer positions
+            var x = 200
+            for i in 0 ..< 4 {
+                foundationLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
+                foundationLayers[i].position = CGPoint(x: x, y: 50)
+                x += 50
+            }
+            
+            // Tableau layer positions
+            x = 50
+            for i in 0 ..< 7 {
+                tableauLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
+                tableauLayers[i].position = CGPoint(x: x, y: 120)
+                x += 50
+            }
+        }
+        else
+        {
+            let cardSize = (width: 150/3, height: 215/3)
+            
+            // Stock layer position
+            stockLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
+            stockLayer.position = CGPoint(x: 50, y: 50)
+            
+            // Waste layer position
+            wasteLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
+            wasteLayer.position = CGPoint(x: 100, y: 50)
+            
+            // Foundation layer positions
+            var x = 200
+            for i in 0 ..< 4 {
+                foundationLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
+                foundationLayers[i].position = CGPoint(x: x, y: 50)
+                x += 50
+            }
+            
+            // Tableau layer positions
+            x = 50
+            for i in 0 ..< 7 {
+                tableauLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
+                tableauLayers[i].position = CGPoint(x: x, y: 120)
+                x += 50
+            }
+        }
+        
+        layoutCards()
     }
     
     func layoutCards() {
@@ -158,6 +219,14 @@ class SolitaireView: UIView {
         }
         
         //... layout cards in waste and foundation stacks ...
+        let waste = solitaire.waste
+        for card in waste {
+            let cardLayer = cardToLayerDictionary[card]!
+            cardLayer.frame = stockLayer.frame
+            cardLayer.faceUp = solitaire.isCardFaceUp(card)
+            cardLayer.zPosition = z
+            z += 1.0
+        }
         
         let cardSize = stockLayer.bounds.size
         let fanOffset = FAN_OFFSET * cardSize.height

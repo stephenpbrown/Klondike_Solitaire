@@ -31,7 +31,7 @@ class Solitaire {
         foundation = [[]] //Array(repeating: [Card](), count: 52)
         
         self.tableau = [[]] //Array(repeating: [Card](), count: 52)
-            
+        
         faceUpCards = []
     }
     
@@ -65,13 +65,15 @@ class Solitaire {
         for c in 0 ..< 7 {
             for r in 0 ... c {
                 randomIndex = Int(arc4random_uniform(UInt32(setRegions.count)))
-                tableau.append([setRegions[randomIndex]])
+                
+                // http://stackoverflow.com/questions/28163034/how-to-properly-declare-array-of-custom-objects-in-swift
+                tableau.append([])
+                tableau[c].append(setRegions[randomIndex])
                 
                 // Set bottom cards face up
                 if r == c {
-                    // XXX
+                    faceUpCards.insert(setRegions[randomIndex])
                 }
-                
                 setRegions.remove(at: randomIndex)
             }
         }
@@ -96,7 +98,7 @@ class Solitaire {
     
     // Checks to see if the card is facing up
     func isCardFaceUp(_ card : Card) -> Bool {
-        return true
+        return faceUpCards.contains(card)
     }
     
     // Array of face up cards found stacked on top of one of the tableau’s.
