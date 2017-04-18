@@ -145,34 +145,92 @@ class SolitaireView: UIView {
         let width = bounds.size.width
         let height = bounds.size.height
         let portrait = width < height
+        let isIpad = UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.pad
         
         //... determine size and position of stock, waste, foundation and tableau layers ...
         
-        if portrait {
+        // Is an iPhone and in portrait mode
+        if portrait && !isIpad {
             let cardSize = (width: 150/4, height: 215/4)
             
             // Stock layer position
             stockLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
-            stockLayer.position = CGPoint(x: 50, y: 50)
+            stockLayer.position = CGPoint(x: 30, y: 50)
             
             // Waste layer position
             wasteLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
-            wasteLayer.position = CGPoint(x: 100, y: 50)
+            wasteLayer.position = CGPoint(x: 88, y: 50)
             
             // Foundation layer positions
-            var x = 200
+            var x = 204
             for i in 0 ..< 4 {
                 foundationLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
                 foundationLayers[i].position = CGPoint(x: x, y: 50)
-                x += 50
+                x += 58
             }
             
             // Tableau layer positions
-            x = 50
+            x = 30
             for i in 0 ..< 7 {
                 tableauLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
                 tableauLayers[i].position = CGPoint(x: x, y: 120)
-                x += 50
+                x += 58
+            }
+        }
+        // Is an iPad and is in portrait mode
+        else if portrait && isIpad {
+            let cardSize = (width: 150/2, height: 215/2)
+            
+            // Stock layer position
+            stockLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
+            stockLayer.position = CGPoint(x: 80, y: 100)
+            
+            // Waste layer position
+            wasteLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
+            wasteLayer.position = CGPoint(x: 180, y: 100)
+            
+            // Foundation layer positions
+            var x = 380
+            for i in 0 ..< 4 {
+                foundationLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
+                foundationLayers[i].position = CGPoint(x: x, y: 100)
+                x += 100
+            }
+            
+            // Tableau layer positions
+            x = 80
+            for i in 0 ..< 7 {
+                tableauLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
+                tableauLayers[i].position = CGPoint(x: x, y: 250)
+                x += 100
+            }
+        }
+        // Is an iPad and is in landscape mode
+        else if !portrait && isIpad {
+            let cardSize = (width: 150/2, height: 215/2)
+            
+            // Stock layer position
+            stockLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
+            stockLayer.position = CGPoint(x: 100, y: 100)
+            
+            // Waste layer position
+            wasteLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
+            wasteLayer.position = CGPoint(x: 235, y: 100)
+            
+            // Foundation layer positions
+            var x = 505
+            for i in 0 ..< 4 {
+                foundationLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
+                foundationLayers[i].position = CGPoint(x: x, y: 100)
+                x += 135
+            }
+            
+            // Tableau layer positions
+            x = 100
+            for i in 0 ..< 7 {
+                tableauLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
+                tableauLayers[i].position = CGPoint(x: x, y: 250)
+                x += 135
             }
         }
         else
@@ -181,26 +239,26 @@ class SolitaireView: UIView {
             
             // Stock layer position
             stockLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
-            stockLayer.position = CGPoint(x: 50, y: 50)
+            stockLayer.position = CGPoint(x: 70, y: 50)
             
             // Waste layer position
             wasteLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
-            wasteLayer.position = CGPoint(x: 100, y: 50)
+            wasteLayer.position = CGPoint(x: 170, y: 50)
             
             // Foundation layer positions
-            var x = 200
+            var x = 370
             for i in 0 ..< 4 {
                 foundationLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
                 foundationLayers[i].position = CGPoint(x: x, y: 50)
-                x += 50
+                x += 100
             }
             
             // Tableau layer positions
-            x = 50
+            x = 70
             for i in 0 ..< 7 {
                 tableauLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
-                tableauLayers[i].position = CGPoint(x: x, y: 120)
-                x += 50
+                tableauLayers[i].position = CGPoint(x: x, y: 150)
+                x += 100
             }
         }
         
