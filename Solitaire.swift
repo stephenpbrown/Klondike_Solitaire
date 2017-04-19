@@ -110,16 +110,24 @@ class Solitaire {
     
     // Can the given card be legally dropped on the ith tableau?
     func canDropCard(_ card : Card, onTableau i : Int) -> Bool {
-        var lowerCard = tableau[i]
+        let lowerCard = tableau[i].last
         
-        // TODO: Continue from here implementing tableau
+        let val1 = lowerCard!.suit.hashValue
+        let val2 = card.suit.hashValue
+        let addition = val1 + val2
+        
+        if ((lowerCard?.rank)! - 1) == card.rank {
+            if addition > 1 && addition < 5 {
+                return true
+            }
+        }
         
         return false
     }
     
     // The user did drop the card on the on the ith tableau.
     func didDropCard(_ card : Card, onTableau i : Int) {
-        
+        tableau[i].append(card)
     }
     
     // Can the given stack of cards be legally dropped on the i tableau?

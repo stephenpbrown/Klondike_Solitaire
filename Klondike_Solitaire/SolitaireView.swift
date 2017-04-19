@@ -270,22 +270,24 @@ class SolitaireView: UIView {
         var z : CGFloat = 1.0
         let stock = solitaire.stock
         for card in stock {
+            z += 1.0
             let cardLayer = cardToLayerDictionary[card]!
             cardLayer.frame = stockLayer.frame
             cardLayer.faceUp = solitaire.isCardFaceUp(card)
             cardLayer.zPosition = z
-            z += 1.0
+            //z += 1.0
         }
         
         //... layout cards in waste and foundation stacks ...
         let waste = solitaire.waste
         z = 1.0
         for card in waste {
+            z += 1.0
             let cardLayer = cardToLayerDictionary[card]!
             cardLayer.frame = wasteLayer.frame
             cardLayer.faceUp = solitaire.isCardFaceUp(card)
             cardLayer.zPosition = z
-            z += 1.0
+            //z += 1.0
         }
         
         let cardSize = stockLayer.bounds.size
@@ -294,13 +296,14 @@ class SolitaireView: UIView {
             let foundationOrigin = foundationLayers[i].frame.origin
             var j : CGFloat = 0
             for card in foundation {
+                z += 1.0
                 let cardLayer = cardToLayerDictionary[card]!
                 cardLayer.frame =
                     CGRect(x: foundationOrigin.x, y: foundationOrigin.y + 50*j,
                            width: cardSize.width, height: cardSize.height)
                 cardLayer.faceUp = solitaire.isCardFaceUp(card)
                 cardLayer.zPosition = z
-                z += 1.0
+                
                 j += 1.0
             }
         }
@@ -432,11 +435,25 @@ class SolitaireView: UIView {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let dragLayer = draggingCardLayer {
+            var canDropCard : Bool = false
             for i in 0 ..< 7 {
-                if tableauLayers[i].frame.intersects(dragLayer.frame) {
-                    var canDropCard = solitaire.canDropCard(dragLayer.card, onTableau: i)
-                    break
+                let tableau = solitaire.tableau[i]
+                for card in tableau {
+                    let cardLayer = cardToLayerDictionary[card]!
+                    if cardLayer.frame.intersects(dragLayer.frame) {
+                        canDropCard = solitaire.canDropCard(dragLayer.card, onTableau: i)
+                        
+                        if canDropCard {
+                            solitaire.didDropCard(dragLayer.card, onTableau: i)
+                            layoutCards()
+                        }
+                        break
+                    }
                 }
+            }
+            
+            if !canDropCard {
+                dragLayer.position = touchStartLayerPosition
             }
 //                ... determine where the user is trying to drop the card
 //                ... determine if this is a valid/legal drop

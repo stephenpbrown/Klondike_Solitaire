@@ -9,10 +9,10 @@
 import UIKit
 
 enum Suit : UInt8 {
-    case spades = 0
-    case clubs  = 1
-    case diamonds = 2
-    case hearts = 3
+    case spades = 0 // Black
+    case clubs  = 1 // Black
+    case diamonds = 2 // Red
+    case hearts = 3 // Red
 }
 
 enum Rank : UInt8 {
