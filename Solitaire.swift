@@ -110,12 +110,22 @@ class Solitaire {
     
     // Can the given card be legally dropped on the ith tableau?
     func canDropCard(_ card : Card, onTableau i : Int) -> Bool {
+        
+        // King on an empty layer
+        if tableau[i].isEmpty && card.rank == 13 {
+            return true
+        }
+        else if tableau[i].isEmpty && card.rank != 13 {
+            return false
+        }
+        
         let lowerCard = tableau[i].last
         
         let val1 = lowerCard!.suit.hashValue
         let val2 = card.suit.hashValue
         let addition = val1 + val2
         
+        // TODO: Fix why sometimes the lowerCard and card are the same card
         if ((lowerCard?.rank)! - 1) == card.rank {
             if addition > 1 && addition < 5 {
                 return true
@@ -127,6 +137,19 @@ class Solitaire {
     
     // The user did drop the card on the on the ith tableau.
     func didDropCard(_ card : Card, onTableau i : Int) {
+        //tableau[i].append(card)
+        
+        for k in 0 ..< 7 {
+            if tableau[k].last == card {
+                tableau[k].removeLast()
+            }
+        }
+        
+        if waste.contains(card) {
+            let index = waste.index(of: card)
+            waste.remove(at: index!)
+        }
+        
         tableau[i].append(card)
     }
     
@@ -181,6 +204,16 @@ class Solitaire {
         waste.append(card)
         faceUpCards.insert(card)
         stock.removeLast()
+    }
+    
+    func indexOfCardInTableau(_ card: Card) -> Int {
+        for i in 0 ..< 7 {
+            if tableau[i].last == card {
+                return i
+            }
+        }
+        
+        return -1
     }
     
     // Move all waste cards back to the stock (they’re all flipped over – order is maintained).

@@ -438,13 +438,33 @@ class SolitaireView: UIView {
             var canDropCard : Bool = false
             for i in 0 ..< 7 {
                 let tableau = solitaire.tableau[i]
+                
+                if tableau.isEmpty {
+                    canDropCard = solitaire.canDropCard(dragLayer.card, onTableau: i)
+                    
+                    if canDropCard {
+                        solitaire.didDropCard(dragLayer.card, onTableau: i)
+                        layoutCards()
+                    }
+                    break
+                }
+                
                 for card in tableau {
                     let cardLayer = cardToLayerDictionary[card]!
                     if cardLayer.frame.intersects(dragLayer.frame) {
                         canDropCard = solitaire.canDropCard(dragLayer.card, onTableau: i)
                         
                         if canDropCard {
+                            let oldTableauPosition = solitaire.indexOfCardInTableau(dragLayer.card)
                             solitaire.didDropCard(dragLayer.card, onTableau: i)
+                            
+                            if oldTableauPosition != -1 {
+                                let canFlipCard = solitaire.canFlipCard(solitaire.tableau[oldTableauPosition].last!)
+                                
+                                if canFlipCard {
+                                    solitaire.flipTableauCard(solitaire.tableau[oldTableauPosition].last!)
+                                }
+                            }
                             layoutCards()
                         }
                         break
