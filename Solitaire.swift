@@ -103,9 +103,32 @@ class Solitaire {
     }
     
     // Array of face up cards found stacked on top of one of the tableau’s.
-    func fanBeginningWithCard(_ card : Card) -> [Card]?
-    {
-        return []
+    func fanBeginningWithCard(_ card : Card) -> [Card]? {
+        var fanOfCards : [Card] = []
+        let indexOfCard = indexOfCardInTableau(card)
+        
+        if indexOfCard == -1 {
+            return nil
+        }
+        
+        let numOfCardsInTableauColumn = tableau[indexOfCard].count
+        
+        // http://stackoverflow.com/questions/35032182/decrement-index-in-a-loop-after-swift-c-style-loops-deprecated
+        for i in (0 ..< numOfCardsInTableauColumn).reversed() {
+            if tableau[indexOfCard][i] == card {
+                fanOfCards.append(tableau[indexOfCard][i])
+                break
+            }
+            else {
+                fanOfCards.append(tableau[indexOfCard][i])
+            }
+        }
+        
+        if fanOfCards.count == 1 || fanOfCards.count == 0 {
+            return nil
+        }
+        
+        return fanOfCards.reversed()
     }
     
     // Can the given card be legally dropped on the ith tableau?
@@ -153,6 +176,17 @@ class Solitaire {
         }
     }
     
+    func removeFanFromTableau(_ cards: [Card]) {
+        for i in 0 ..< 7 {
+            if tableau[i].contains(cards.last!) {
+                for _ in cards {
+                    tableau[i].removeLast()
+                }
+                return
+            }
+        }
+    }
+    
     func removeCardFromWaste(_ card: Card) {
         if waste.contains(card) {
             let index = waste.index(of: card)
@@ -162,12 +196,40 @@ class Solitaire {
     
     // Can the given stack of cards be legally dropped on the i tableau?
     func canDropFan(_ cards : [Card], onTableau i : Int) -> Bool {
+        
+        if cards.isEmpty {
+            return false
+        }
+        
+        // King on an empty layer
+        let lowerCardOnFan = cards.first
+        if tableau[i].isEmpty && lowerCardOnFan?.rank == king {
+            return true
+        }
+        else if tableau[i].isEmpty && lowerCardOnFan?.rank != king {
+            return false
+        }
+        
+        let firstCardOnTableau = tableau[i].last
+        
+        let val1 = firstCardOnTableau!.suit.hashValue
+        let val2 = lowerCardOnFan?.suit.hashValue
+        let addition = val1 + val2!
+        
+        // TODO: Fix why sometimes the lowerCard and card are the same card
+        if ((firstCardOnTableau?.rank)! - 1) == lowerCardOnFan?.rank {
+            if addition > 1 && addition < 5 {
+                return true
+            }
+        }
+        
         return false
     }
     
     // A stack of cards has been dropped in the ith tableau.
     func didDropFan(_ cards : [Card], onTableau i : Int) {
-        
+        removeFanFromTableau(cards)
+        tableau[i].append(contentsOf: cards)
     }
     
     // Can user legally flip the card over?
@@ -241,11 +303,7 @@ class Solitaire {
     func indexOfCardInTableau(_ card: Card) -> Int {
         
         for i in 0 ..< 7 {
-            if tableau[i].isEmpty {
-                return -1
-            }
-            
-            if tableau[i].last == card {
+            if !tableau[i].isEmpty && tableau[i].contains(card) {
                 return i
             }
         }

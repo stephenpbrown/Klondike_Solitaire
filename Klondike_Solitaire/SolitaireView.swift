@@ -411,15 +411,19 @@ class SolitaireView: UIView {
                     }
                     //...else initiate drag of card (or stack of cards) by setting
                     // draggingCardLayer, and (possibly) draggingFan...
-                    else if touch.tapCount == 1 {
+                    else {
+                        
                         touchStartPoint = touchPoint
                         touchStartLayerPosition = cardLayer.position
                         cardLayer.transform = CATransform3DIdentity
                         draggingCardLayer = cardLayer
-                        draggingCardLayer!.zPosition = topZPosition
-                        topZPosition += 1
                         
-                        // TODO: Check for draggingFan
+                        draggingFan = solitaire.fanBeginningWithCard(card)
+                        
+                        if draggingFan == nil {
+                            draggingCardLayer!.zPosition = topZPosition
+                            topZPosition += 1
+                        }
                     }
                     
                 } else if solitaire.canFlipCard(card) {
@@ -439,6 +443,8 @@ class SolitaireView: UIView {
     func flipCard(_ card : Card, faceUp : Bool) {
         
         if solitaire.stock.contains(card) {
+            // TODO: Try to figure out why half the stock deck messes up zPositioning
+            
 //            let cardLayer = cardToLayerDictionary[card]
 //            cardLayer?.zPosition = topZPosition
 //            topZPosition += 1
@@ -462,11 +468,14 @@ class SolitaireView: UIView {
         
         draggingCardLayer!.position = position
         if let draggingFan = draggingFan {
+//            topZPosition += 1
             let off = FAN_OFFSET*draggingCardLayer!.bounds.size.height
             let n = draggingFan.count
             for i in 1 ..< n {
                 let card = draggingFan[i]
                 let cardLayer = cardToLayerDictionary[card]!
+//                cardLayer.zPosition = topZPosition
+//                topZPosition += 1
                 cardLayer.position = CGPoint(x: position.x, y: position.y + CGFloat(i)*off)
             }
         }
@@ -495,44 +504,72 @@ class SolitaireView: UIView {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let dragLayer = draggingCardLayer {
             canDropCard = false
-            //
-            // Check to see if a card can be set into the foundation
-            //
-            for i in 0 ..< 4 {
-                let foundation = solitaire.foundation[i]
-                
-                if foundation.isEmpty  && dragLayer.frame.intersects(foundationLayers[i].frame) {
-                    canDropCard = solitaire.canMoveCardToFoundation(dragLayer.card, onFoundation: i)
+            if draggingFan != nil { // fan of cards (can only drop on tableau stack)
+                for i in 0 ..< 7 {
+                    var tableau = solitaire.tableau[i]
                     
-                    if canDropCard {
-                        let oldTableauPosition = solitaire.indexOfCardInTableau(dragLayer.card)
+                    if tableau.isEmpty {
+                        canDropCard = solitaire.canDropFan(draggingFan!, onTableau: i)
                         
-                        solitaire.moveCardToFoundation(dragLayer.card, onFoundation: i)
-                        
-                        // Check to see if the card is from a tableau and the card below it can be flipped
-                        if oldTableauPosition != -1 && !solitaire.tableau[oldTableauPosition].isEmpty {
-                            let tableau = solitaire.tableau[oldTableauPosition]
+                        if canDropCard {
+                            let oldTableauPosition = solitaire.indexOfCardInTableau(dragLayer.card)
+                            solitaire.didDropFan(draggingFan!, onTableau: i)
                             
-                            let canFlipCard = solitaire.canFlipCard(tableau.last!)
+                            // Check to see if the card is from a tableau and the card below it can be flipped
+                            if oldTableauPosition != -1 && !solitaire.tableau[oldTableauPosition].isEmpty {
+                                tableau = solitaire.tableau[oldTableauPosition]
+                                
+                                let canFlipCard = solitaire.canFlipCard(tableau.last!)
+                                
+                                if canFlipCard {
+                                    solitaire.flipTableauCard(tableau.last!)
+                                }
+                            }
+                            layoutCards()
+                            break
+                        }
+                    }
+                    
+                    for card in tableau {
+                        let cardLayer = cardToLayerDictionary[card]!
+                        if cardLayer.frame.intersects(dragLayer.frame) {
+                            canDropCard = solitaire.canDropFan(draggingFan!, onTableau: i)
                             
-                            if canFlipCard {
-                                solitaire.flipTableauCard(tableau.last!)
+                            if canDropCard {
+                                let oldTableauPosition = solitaire.indexOfCardInTableau(dragLayer.card)
+                                solitaire.didDropFan(draggingFan!, onTableau: i)
+                                
+                                // Check to see if the card is from a tableau and the card below it can be flipped
+                                if oldTableauPosition != -1 && !solitaire.tableau[oldTableauPosition].isEmpty {
+                                    
+                                    tableau = solitaire.tableau[oldTableauPosition]
+                                    let canFlipCard = solitaire.canFlipCard(tableau.last!)
+                                    
+                                    if canFlipCard {
+                                        solitaire.flipTableauCard(tableau.last!)
+                                    }
+                                }
+                                layoutCards()
+                                break
                             }
                         }
-                        layoutCards()
-                        
-                        // XXXXXXXX
-                        // canDropCard gets reset back to false which is causing an error
-                        // XXXXXXXX
+                    }
+                    if canDropCard {
                         break
                     }
                 }
-                
-                for card in foundation {
-                    let cardLayer = cardToLayerDictionary[card]!
+//                 ... determine if valid/legal drop
+//                 ... if so, update model and view
+//                 ... else put cards back from whence they came
+            }
+            else {
+                //
+                // Check to see if a card can be set into the foundation
+                //
+                for i in 0 ..< 4 {
+                    let foundation = solitaire.foundation[i]
                     
-                    if cardLayer.frame.intersects(dragLayer.frame) {
-                        
+                    if foundation.isEmpty && dragLayer.frame.intersects(foundationLayers[i].frame) {
                         canDropCard = solitaire.canMoveCardToFoundation(dragLayer.card, onFoundation: i)
                         
                         if canDropCard {
@@ -554,51 +591,23 @@ class SolitaireView: UIView {
                             break
                         }
                     }
-                }
-            }
-            
-            //
-            // Check to see if the card can be set into the tableau
-            //
-            if !canDropCard {
-                for i in 0 ..< 7 {
-                    var tableau = solitaire.tableau[i]
                     
-                    if tableau.isEmpty {
-                        canDropCard = solitaire.canDropCard(dragLayer.card, onTableau: i)
-                        
-                        if canDropCard {
-                            let oldTableauPosition = solitaire.indexOfCardInTableau(dragLayer.card)
-                            solitaire.didDropCard(dragLayer.card, onTableau: i)
-                            
-                            // Check to see if the card is from a tableau and the card below it can be flipped
-                            if oldTableauPosition != -1 && !solitaire.tableau[oldTableauPosition].isEmpty {
-                                tableau = solitaire.tableau[oldTableauPosition]
-                                
-                                let canFlipCard = solitaire.canFlipCard(tableau.last!)
-                                
-                                if canFlipCard {
-                                    solitaire.flipTableauCard(tableau.last!)
-                                }
-                            }
-                            layoutCards()
-                            break
-                        }
-                    }
-                    
-                    for card in tableau {
+                    for card in foundation {
                         let cardLayer = cardToLayerDictionary[card]!
+                        
                         if cardLayer.frame.intersects(dragLayer.frame) {
-                            canDropCard = solitaire.canDropCard(dragLayer.card, onTableau: i)
+                            
+                            canDropCard = solitaire.canMoveCardToFoundation(dragLayer.card, onFoundation: i)
                             
                             if canDropCard {
                                 let oldTableauPosition = solitaire.indexOfCardInTableau(dragLayer.card)
-                                solitaire.didDropCard(dragLayer.card, onTableau: i)
+                                
+                                solitaire.moveCardToFoundation(dragLayer.card, onFoundation: i)
                                 
                                 // Check to see if the card is from a tableau and the card below it can be flipped
                                 if oldTableauPosition != -1 && !solitaire.tableau[oldTableauPosition].isEmpty {
+                                    let tableau = solitaire.tableau[oldTableauPosition]
                                     
-                                    tableau = solitaire.tableau[oldTableauPosition]
                                     let canFlipCard = solitaire.canFlipCard(tableau.last!)
                                     
                                     if canFlipCard {
@@ -611,6 +620,65 @@ class SolitaireView: UIView {
                         }
                     }
                 }
+                
+                //
+                // Check to see if the card can be set into the tableau
+                //
+                if !canDropCard {
+                    for i in 0 ..< 7 {
+                        var tableau = solitaire.tableau[i]
+                        
+                        if tableau.isEmpty {
+                            canDropCard = solitaire.canDropCard(dragLayer.card, onTableau: i)
+                            
+                            if canDropCard {
+                                let oldTableauPosition = solitaire.indexOfCardInTableau(dragLayer.card)
+                                solitaire.didDropCard(dragLayer.card, onTableau: i)
+                                
+                                // Check to see if the card is from a tableau and the card below it can be flipped
+                                if oldTableauPosition != -1 && !solitaire.tableau[oldTableauPosition].isEmpty {
+                                    tableau = solitaire.tableau[oldTableauPosition]
+                                    
+                                    let canFlipCard = solitaire.canFlipCard(tableau.last!)
+                                    
+                                    if canFlipCard {
+                                        solitaire.flipTableauCard(tableau.last!)
+                                    }
+                                }
+                                layoutCards()
+                                break
+                            }
+                        }
+                        
+                        for card in tableau {
+                            let cardLayer = cardToLayerDictionary[card]!
+                            if cardLayer.frame.intersects(dragLayer.frame) {
+                                canDropCard = solitaire.canDropCard(dragLayer.card, onTableau: i)
+                                
+                                if canDropCard {
+                                    let oldTableauPosition = solitaire.indexOfCardInTableau(dragLayer.card)
+                                    solitaire.didDropCard(dragLayer.card, onTableau: i)
+                                    
+                                    // Check to see if the card is from a tableau and the card below it can be flipped
+                                    if oldTableauPosition != -1 && !solitaire.tableau[oldTableauPosition].isEmpty {
+                                        
+                                        tableau = solitaire.tableau[oldTableauPosition]
+                                        let canFlipCard = solitaire.canFlipCard(tableau.last!)
+                                        
+                                        if canFlipCard {
+                                            solitaire.flipTableauCard(tableau.last!)
+                                        }
+                                    }
+                                    layoutCards()
+                                    break
+                                }
+                            }
+                        }
+                        if canDropCard {
+                            break
+                        }
+                    }
+                }
             }
             //
             // If the card can't be dropped, move it back to its previous position
@@ -619,15 +687,6 @@ class SolitaireView: UIView {
                 dragLayer.position = touchStartLayerPosition
                 layoutCards()
             }
-//                ... determine where the user is trying to drop the card
-//                ... determine if this is a valid/legal drop
-//                ... if so, update model and view
-//                ... else put card back from whence it came
-//            } else { // fan of cards (can only drop on tableau stack)
-//                ... determine if valid/legal drop
-//                ... if so, update model and view
-//                ... else put cards back from whence they came
-//            }
             draggingCardLayer = nil
         }
     }
