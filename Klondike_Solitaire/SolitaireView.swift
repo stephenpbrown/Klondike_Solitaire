@@ -270,18 +270,9 @@ class SolitaireView: UIView {
     
     func layoutCards() {
         var z : CGFloat = 1.0
-        let stock = solitaire.stock
-        for card in stock {
-            let cardLayer = cardToLayerDictionary[card]!
-            cardLayer.frame = stockLayer.frame
-            cardLayer.faceUp = solitaire.isCardFaceUp(card)
-            cardLayer.zPosition = z
-            z += 1.0
-        }
         
         //... layout cards in waste and foundation stacks ...
         let waste = solitaire.waste
-        z = 1.0
         for card in waste {
             let cardLayer = cardToLayerDictionary[card]!
             cardLayer.frame = wasteLayer.frame
@@ -290,6 +281,15 @@ class SolitaireView: UIView {
             z += 1.0
         }
         
+        let stock = solitaire.stock
+        for card in stock {
+            let cardLayer = cardToLayerDictionary[card]!
+            cardLayer.frame = stockLayer.frame
+            cardLayer.faceUp = solitaire.isCardFaceUp(card)
+            cardLayer.zPosition = z
+        }
+        
+        z = 1.0
         let cardSize = stockLayer.bounds.size
         for i in 0 ..< 4 {
             let foundation = solitaire.foundation[i]
@@ -304,7 +304,8 @@ class SolitaireView: UIView {
                 z += 1.0
             }
         }
-
+        
+        z = 1.0
         let fanOffset = FAN_OFFSET * cardSize.height
         for i in 0 ..< 7 {
             let tableau = solitaire.tableau[i]
@@ -424,6 +425,14 @@ class SolitaireView: UIView {
                             draggingCardLayer!.zPosition = topZPosition
                             topZPosition += 1
                         }
+                        // Set the zPositioning of all the cards in the fan to be above the other cards
+                        else {
+                            for card in draggingFan! {
+                                let cardLayer = cardToLayerDictionary[card]
+                                cardLayer?.zPosition = topZPosition
+                                topZPosition += 1
+                            }
+                        }
                     }
                     
                 } else if solitaire.canFlipCard(card) {
@@ -444,10 +453,6 @@ class SolitaireView: UIView {
         
         if solitaire.stock.contains(card) {
             // TODO: Try to figure out why half the stock deck messes up zPositioning
-            
-//            let cardLayer = cardToLayerDictionary[card]
-//            cardLayer?.zPosition = topZPosition
-//            topZPosition += 1
             solitaire.stockToWaste(card)
         }
         else if solitaire.foundation.contains(where: { $0 == [card]}) {
@@ -468,14 +473,11 @@ class SolitaireView: UIView {
         
         draggingCardLayer!.position = position
         if let draggingFan = draggingFan {
-//            topZPosition += 1
             let off = FAN_OFFSET*draggingCardLayer!.bounds.size.height
             let n = draggingFan.count
             for i in 1 ..< n {
                 let card = draggingFan[i]
                 let cardLayer = cardToLayerDictionary[card]!
-//                cardLayer.zPosition = topZPosition
-//                topZPosition += 1
                 cardLayer.position = CGPoint(x: position.x, y: position.y + CGFloat(i)*off)
             }
         }
@@ -530,8 +532,9 @@ class SolitaireView: UIView {
                         }
                     }
                     
-                    for card in tableau {
-                        let cardLayer = cardToLayerDictionary[card]!
+                    if !tableau.isEmpty {
+                        let topCard = tableau.last!
+                        let cardLayer = cardToLayerDictionary[topCard]!
                         if cardLayer.frame.intersects(dragLayer.frame) {
                             canDropCard = solitaire.canDropFan(draggingFan!, onTableau: i)
                             
@@ -592,8 +595,9 @@ class SolitaireView: UIView {
                         }
                     }
                     
-                    for card in foundation {
-                        let cardLayer = cardToLayerDictionary[card]!
+                    if !foundation.isEmpty {
+                        let topCard = foundation.last!
+                        let cardLayer = cardToLayerDictionary[topCard]!
                         
                         if cardLayer.frame.intersects(dragLayer.frame) {
                             
@@ -650,8 +654,9 @@ class SolitaireView: UIView {
                             }
                         }
                         
-                        for card in tableau {
-                            let cardLayer = cardToLayerDictionary[card]!
+                        if !tableau.isEmpty {
+                            let topCard = tableau.last!
+                            let cardLayer = cardToLayerDictionary[topCard]!
                             if cardLayer.frame.intersects(dragLayer.frame) {
                                 canDropCard = solitaire.canDropCard(dragLayer.card, onTableau: i)
                                 

@@ -148,9 +148,9 @@ class Solitaire {
         let val2 = card.suit.hashValue
         let addition = val1 + val2
         
-        // TODO: Fix why sometimes the lowerCard and card are the same card
+        // Make sure the cards are compatible
         if ((lowerCard?.rank)! - 1) == card.rank {
-            if addition > 1 && addition < 5 {
+            if addition > 1 && addition < 5 && val1 != val2 {
                 return true
             }
         }
