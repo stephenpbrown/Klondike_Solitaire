@@ -112,10 +112,10 @@ class Solitaire {
     func canDropCard(_ card : Card, onTableau i : Int) -> Bool {
         
         // King on an empty layer
-        if tableau[i].isEmpty && card.rank == 13 {
+        if tableau[i].isEmpty && card.rank == king {
             return true
         }
-        else if tableau[i].isEmpty && card.rank != 13 {
+        else if tableau[i].isEmpty && card.rank != king {
             return false
         }
         
@@ -139,18 +139,25 @@ class Solitaire {
     func didDropCard(_ card : Card, onTableau i : Int) {
         //tableau[i].append(card)
         
+        removeCardFromTableau(card)
+        removeCardFromWaste(card)
+        
+        tableau[i].append(card)
+    }
+    
+    func removeCardFromTableau(_ card: Card) {
         for k in 0 ..< 7 {
             if tableau[k].last == card {
                 tableau[k].removeLast()
             }
         }
-        
+    }
+    
+    func removeCardFromWaste(_ card: Card) {
         if waste.contains(card) {
             let index = waste.index(of: card)
             waste.remove(at: index!)
         }
-        
-        tableau[i].append(card)
     }
     
     // Can the given stack of cards be legally dropped on the i tableau?
@@ -170,11 +177,9 @@ class Solitaire {
             return true
         }
         
-        for r in 0 ..< 7 {
-            for c in 0 ... r {
-                if card == tableau[r][c] {
-                    return true
-                }
+        for i in 0 ..< 7 {
+            if tableau[i].contains(card) {
+                return true
             }
         }
         
@@ -206,8 +211,40 @@ class Solitaire {
         stock.removeLast()
     }
     
+    func canMoveCardToFoundation (_ card : Card, onFoundation i : Int) -> Bool {
+        
+        if foundation[i].isEmpty && card.rank == ace {
+            return true
+        }
+        else if foundation[i].isEmpty && card.rank != ace {
+            return false
+        }
+        
+        let lowerCard = foundation[i].last
+        
+        // TODO: Fix why sometimes the lowerCard and card are the same card
+        if ((lowerCard?.rank)! + 1) == card.rank {
+            if (lowerCard?.suit.hashValue) == card.suit.hashValue {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
+    func moveCardToFoundation (_ card: Card, onFoundation i : Int) {
+        removeCardFromWaste(card)
+        removeCardFromTableau(card)
+        foundation[i].append(card)
+    }
+    
     func indexOfCardInTableau(_ card: Card) -> Int {
+        
         for i in 0 ..< 7 {
+            if tableau[i].isEmpty {
+                return -1
+            }
+            
             if tableau[i].last == card {
                 return i
             }
