@@ -164,6 +164,7 @@ class Solitaire {
         
         removeCardFromTableau(card)
         removeCardFromWaste(card)
+        removeCardFromFoundation(card)
         
         tableau[i].append(card)
     }
@@ -191,6 +192,14 @@ class Solitaire {
         if waste.contains(card) {
             let index = waste.index(of: card)
             waste.remove(at: index!)
+        }
+    }
+    
+    func removeCardFromFoundation(_ card: Card) {
+        for i in 0 ..< 4 {
+            if foundation[i].contains(card) {
+                foundation[i].removeLast()
+            }
         }
     }
     
