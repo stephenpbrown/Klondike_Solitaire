@@ -72,6 +72,7 @@ func imageForCard(_ card : Card) -> UIImage {
 
 class SolitaireView: UIView {
     
+
     var stockLayer : CALayer!
     var wasteLayer : CALayer!
     var foundationLayers : [CALayer]!  // four foundation layers
@@ -93,6 +94,13 @@ class SolitaireView: UIView {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         return appDelegate.solitaire
     }()
+    
+    func resetGame() {
+        // Remove all sublayers and redo the allocations
+        // http://stackoverflow.com/questions/10789766/remove-all-sublayers-from-a-view
+        self.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
+        awakeFromNib()
+    }
     
     override func awakeFromNib() {
         self.layer.name = "background"

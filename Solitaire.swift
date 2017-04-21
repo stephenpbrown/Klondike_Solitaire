@@ -28,9 +28,9 @@ class Solitaire {
     init() {
         stock = []
         waste = []
-        foundation = [[]] //Array(repeating: [Card](), count: 52)
+        foundation = [] //Array(repeating: [Card](), count: 52)
         
-        self.tableau = [[]] //Array(repeating: [Card](), count: 52)
+        self.tableau = [] //Array(repeating: [Card](), count: 52)
         
         faceUpCards = []
     }
@@ -56,10 +56,6 @@ class Solitaire {
         }
         
         var setRegions = shuffledDeck
-        
-        // TODO: Figure out why these contain an empty object on initialization
-        tableau.remove(at: 0)
-        foundation.remove(at: 0)
         
         // Figure out which cards go into the tableau
         for r in 0 ..< 7 {
@@ -89,7 +85,11 @@ class Solitaire {
     
     // Reshuffle and redeal cards to start a new game.
     func freshGame() {
-        
+        waste.removeAll()
+        stock.removeAll()
+        foundation.removeAll()
+        tableau.removeAll()
+        faceUpCards.removeAll()
     }
 
     // All cards have successfully reached a foundation stack.
