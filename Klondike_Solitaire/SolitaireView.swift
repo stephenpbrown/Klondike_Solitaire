@@ -88,7 +88,7 @@ class SolitaireView: UIView {
     
     var canDropCard : Bool = false
     
-    let FAN_OFFSET = CGFloat(0.2)
+    let FAN_OFFSET = CGFloat(0.3)
     
     lazy var solitaire : Solitaire!  = { // reference to model in app delegate
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -98,7 +98,9 @@ class SolitaireView: UIView {
     func resetGame() {
         // Remove all sublayers and redo the allocations
         // http://stackoverflow.com/questions/10789766/remove-all-sublayers-from-a-view
+        
         self.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
+        solitaire.freshGame()
         awakeFromNib()
     }
     
@@ -446,10 +448,6 @@ class SolitaireView: UIView {
                 } else if solitaire.canFlipCard(card) {
                     flipCard(card, faceUp: true) // update model & view
                 }
-//                else if solitaire.stock.last == card {
-//                    
-//                }
-
             } else if (layer.name == "stock") {
                 solitaire.collectWasteCardsIntoStock()
                 layoutCards()
@@ -457,19 +455,22 @@ class SolitaireView: UIView {
         }
     }
     
+    //
+    // Check to see if the card can be flipped
+    //
     func flipCard(_ card : Card, faceUp : Bool) {
         
         if solitaire.stock.contains(card) {
-            // TODO: Try to figure out why half the stock deck messes up zPositioning
             solitaire.stockToWaste(card)
         }
-        else if solitaire.foundation.contains(where: { $0 == [card]}) {
-            // XXX
-        }
         else {
-            solitaire.flipTableauCard(card)
+            for i in 0 ..< 7 {
+                let tableau = solitaire.tableau[i]
+                if tableau.last == card {
+                    solitaire.flipTableauCard(card)
+                }
+            }
         }
-        
         layoutCards()
     }
     

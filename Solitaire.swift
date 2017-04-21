@@ -45,7 +45,25 @@ class Solitaire {
             }
         }
         
+        let shuffledDeck = shuffleDeck(deckOfCards)
+        setRegions(shuffledDeck)
+        
+        return shuffledDeck
+    }
+    
+    // Reshuffle and redeal cards to start a new game.
+    func freshGame() {
+        waste.removeAll()
+        stock.removeAll()
+        foundation.removeAll()
+        tableau.removeAll()
+        faceUpCards.removeAll()
+    }
+
+    // Shuffle a deck of cards
+    func shuffleDeck(_ cards : [Card]) -> [Card] {
         var shuffledDeck = [Card]()
+        var deckOfCards = cards
         var randomIndex = 0
         
         // Shuffles the deck of cards
@@ -55,6 +73,11 @@ class Solitaire {
             deckOfCards.remove(at: randomIndex)
         }
         
+        return shuffledDeck
+    }
+    
+    // Set all the regions (stock and tableau when initialized)
+    func setRegions(_ shuffledDeck: [Card]) {
         var setRegions = shuffledDeck
         
         // Figure out which cards go into the tableau
@@ -79,19 +102,8 @@ class Solitaire {
         for card in setRegions {
             stock.append(card)
         }
-        
-        return shuffledDeck
     }
     
-    // Reshuffle and redeal cards to start a new game.
-    func freshGame() {
-        waste.removeAll()
-        stock.removeAll()
-        foundation.removeAll()
-        tableau.removeAll()
-        faceUpCards.removeAll()
-    }
-
     // All cards have successfully reached a foundation stack.
     func gameWon() -> Bool {
         return foundation.count == 52
@@ -227,7 +239,7 @@ class Solitaire {
         
         // TODO: Fix why sometimes the lowerCard and card are the same card
         if ((firstCardOnTableau?.rank)! - 1) == lowerCardOnFan?.rank {
-            if addition > 1 && addition < 5 {
+            if addition > 1 && addition < 5 && val1 != val2 {
                 return true
             }
         }

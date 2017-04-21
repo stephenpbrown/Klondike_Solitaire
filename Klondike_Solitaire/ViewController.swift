@@ -28,8 +28,6 @@ class ViewController: UIViewController {
             title: "Yes",
             style: .default,
             handler: { (UIAlertAction) -> Void in
-                let appDelegate = UIApplication.shared.delegate as! AppDelegate
-                appDelegate.solitaire?.freshGame()
                 self.solitaireView.resetGame()
         }))
         self.present(secondaryAlertController, animated: true, completion: nil)
