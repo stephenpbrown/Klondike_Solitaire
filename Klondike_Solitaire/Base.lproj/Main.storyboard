@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina4_7" orientation="portrait">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina5_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -18,39 +18,44 @@
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zGK-TE-EvH" customClass="SolitaireView" customModule="Klondike_Solitaire" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="20" width="375" height="603"/>
+                                <rect key="frame" x="0.0" y="20" width="414" height="716"/>
+                                <subviews>
+                                    <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TdP-Vt-56v">
+                                        <rect key="frame" x="0.0" y="672" width="414" height="44"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="44" id="Wm0-dN-BTk"/>
+                                        </constraints>
+                                        <items>
+                                            <barButtonItem title="New Game" id="fRl-dc-yUI">
+                                                <connections>
+                                                    <action selector="newGame:" destination="BYZ-38-t0r" id="z1K-Q3-kzu"/>
+                                                </connections>
+                                            </barButtonItem>
+                                        </items>
+                                    </toolbar>
+                                </subviews>
                                 <color key="backgroundColor" red="0.43354780279999999" green="0.86933290159999999" blue="0.3011145482" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            </view>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TdP-Vt-56v">
-                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="Wm0-dN-BTk"/>
+                                    <constraint firstAttribute="trailing" secondItem="TdP-Vt-56v" secondAttribute="trailing" id="JoZ-3p-1rz"/>
+                                    <constraint firstItem="TdP-Vt-56v" firstAttribute="leading" secondItem="zGK-TE-EvH" secondAttribute="leading" id="qik-iR-afY"/>
+                                    <constraint firstAttribute="bottom" secondItem="TdP-Vt-56v" secondAttribute="bottom" id="rq4-Oj-fK5"/>
                                 </constraints>
-                                <items>
-                                    <barButtonItem title="New Game" id="fRl-dc-yUI">
-                                        <connections>
-                                            <action selector="newGame:" destination="BYZ-38-t0r" id="z1K-Q3-kzu"/>
-                                        </connections>
-                                    </barButtonItem>
-                                </items>
-                            </toolbar>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="zGK-TE-EvH" secondAttribute="trailing" id="70f-lK-9PY"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="TdP-Vt-56v" secondAttribute="bottom" id="B4F-jL-2BY"/>
-                            <constraint firstItem="TdP-Vt-56v" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="LUM-t4-3Oy"/>
-                            <constraint firstAttribute="trailing" secondItem="TdP-Vt-56v" secondAttribute="trailing" id="WhJ-jR-BP6"/>
-                            <constraint firstItem="TdP-Vt-56v" firstAttribute="top" secondItem="zGK-TE-EvH" secondAttribute="bottom" id="c5d-7B-DNf"/>
                             <constraint firstItem="zGK-TE-EvH" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="iSA-CJ-wcG"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="zGK-TE-EvH" secondAttribute="bottom" id="jSO-aR-MI1"/>
                             <constraint firstItem="zGK-TE-EvH" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="x0Y-Yy-Y4j"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="newGameToolBar" destination="TdP-Vt-56v" id="OiX-Oc-EIk"/>
                         <outlet property="solitaireView" destination="zGK-TE-EvH" id="pKd-EX-EWJ"/>
                     </connections>
                 </viewController>

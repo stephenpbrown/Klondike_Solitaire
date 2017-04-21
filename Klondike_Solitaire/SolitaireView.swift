@@ -86,9 +86,13 @@ class SolitaireView: UIView {
     var touchStartPoint : CGPoint = CGPoint.zero
     var touchStartLayerPosition : CGPoint = CGPoint.zero
     
+    var cardCount : [Int] = [0]
+    
     var canDropCard : Bool = false
     
-    let FAN_OFFSET = CGFloat(0.3)
+    var FAN_OFFSET = CGFloat(0.3)
+    
+    var FAN_OFFSET_ARRAY : [CGFloat] = [CGFloat(0)]
     
     lazy var solitaire : Solitaire!  = { // reference to model in app delegate
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -121,7 +125,10 @@ class SolitaireView: UIView {
         self.layer.addSublayer(wasteLayer)
         
         tableauLayers = []
+        FAN_OFFSET_ARRAY = []
         for i in 0 ..< 7 {
+            FAN_OFFSET_ARRAY.append(CGFloat(FAN_OFFSET))
+            cardCount.append(0)
             tableauLayers.append(CALayer())
             tableauLayers[i].name = "tableau"
             tableauLayers[i].backgroundColor =
@@ -163,6 +170,8 @@ class SolitaireView: UIView {
         
         // Is an iPhone and in portrait mode
         if portrait && !isIpad {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: kOrientationChangedToPortrait), object: nil)
+            
             let cardSize = (width: 150/4, height: 215/4)
             
             // Stock layer position
@@ -191,6 +200,8 @@ class SolitaireView: UIView {
         }
         // Is an iPad and is in portrait mode
         else if portrait && isIpad {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: kOrientationChangedToPortrait), object: nil)
+            
             let cardSize = (width: 150/2, height: 215/2)
             
             // Stock layer position
@@ -219,6 +230,8 @@ class SolitaireView: UIView {
         }
         // Is an iPad and is in landscape mode
         else if !portrait && isIpad {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: kOrientationChangedToLandscape), object: nil)
+            
             let cardSize = (width: 150/2, height: 215/2)
             
             // Stock layer position
@@ -248,6 +261,8 @@ class SolitaireView: UIView {
         // Is an iPhone and in landscape mode
         else
         {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: kOrientationChangedToLandscape), object: nil)
+            
             let cardSize = (width: 150/3, height: 215/3)
             
             // Stock layer position
@@ -316,9 +331,33 @@ class SolitaireView: UIView {
         }
         
         z = 1.0
-        let fanOffset = FAN_OFFSET * cardSize.height
+        //let fanOffset = FAN_OFFSET * cardSize.height
         for i in 0 ..< 7 {
+            var fanOffset = FAN_OFFSET_ARRAY[i] * cardSize.height
+            
             let tableau = solitaire.tableau[i]
+            let lowestPointCard = tableau.last
+            var lowestPointLayer = CALayer()
+            var lowestPoint = CGFloat(0)
+            let height = bounds.size.height + 30
+            
+            
+            if lowestPointCard != nil {
+                lowestPointLayer = cardToLayerDictionary[lowestPointCard!]!
+                lowestPoint = lowestPointLayer.position.y + cardSize.height
+            }
+            
+            if lowestPoint > height {
+                FAN_OFFSET_ARRAY[i] = CGFloat(0.2)
+                fanOffset = FAN_OFFSET_ARRAY[i] * cardSize.height
+                cardCount[i] = tableau.count
+            }
+            else if cardCount[i] > tableau.count {
+                FAN_OFFSET_ARRAY[i] = CGFloat(0.3)
+                fanOffset = FAN_OFFSET_ARRAY[i] * cardSize.height
+                cardCount[i] = tableau.count
+            }
+            
             let tableauOrigin = tableauLayers[i].frame.origin
             var j : CGFloat = 0
             for card in tableau {
@@ -393,6 +432,7 @@ class SolitaireView: UIView {
             }
             if !canDropCard {
                 dragLayer.position = touchStartLayerPosition
+                layoutCards()
             }
             draggingCardLayer = nil
         }
@@ -482,7 +522,7 @@ class SolitaireView: UIView {
         
         draggingCardLayer!.position = position
         if let draggingFan = draggingFan {
-            let off = FAN_OFFSET*draggingCardLayer!.bounds.size.height
+            let off = 0.4*draggingCardLayer!.bounds.size.height
             let n = draggingFan.count
             for i in 1 ..< n {
                 let card = draggingFan[i]
