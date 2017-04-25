@@ -35,6 +35,12 @@
                                                     <action selector="newGame:" destination="BYZ-38-t0r" id="z1K-Q3-kzu"/>
                                                 </connections>
                                             </barButtonItem>
+                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="3oi-Sy-7AS"/>
+                                            <barButtonItem enabled="NO" title="Undo" id="1tN-fH-F9d">
+                                                <connections>
+                                                    <action selector="undo:" destination="BYZ-38-t0r" id="Tif-kR-wcE"/>
+                                                </connections>
+                                            </barButtonItem>
                                         </items>
                                     </toolbar>
                                 </subviews>
@@ -57,6 +63,7 @@
                     <connections>
                         <outlet property="newGameToolBar" destination="TdP-Vt-56v" id="OiX-Oc-EIk"/>
                         <outlet property="solitaireView" destination="zGK-TE-EvH" id="pKd-EX-EWJ"/>
+                        <outlet property="undoButton" destination="1tN-fH-F9d" id="r7g-2f-sBW"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

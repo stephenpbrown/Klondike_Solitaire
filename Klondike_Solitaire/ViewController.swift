@@ -13,29 +13,33 @@ class ViewController: UIViewController {
     @IBOutlet weak var solitaireView: SolitaireView!
     
     @IBOutlet weak var newGameToolBar: UIToolbar!
+    @IBOutlet weak var undoButton: UIBarButtonItem!
     
     @IBAction func newGame(_ sender: Any) {
         
-        let secondaryAlertController = UIAlertController(
+        let AlertController = UIAlertController(
             title: "Start a new game?",
             message: "",
             preferredStyle: .alert
         )
-        secondaryAlertController.addAction(UIKit.UIAlertAction(
+        AlertController.addAction(UIKit.UIAlertAction(
             title: "Cancel",
             style: .cancel,
             handler: nil
         ))
-        secondaryAlertController.addAction(UIKit.UIAlertAction(
+        AlertController.addAction(UIKit.UIAlertAction(
             title: "Yes",
             style: .default,
             handler: { (UIAlertAction) -> Void in
                 self.solitaireView.resetGame()
         }))
-        self.present(secondaryAlertController, animated: true, completion: nil)
+        self.present(AlertController, animated: true, completion: nil)
         
     }
     
+    @IBAction func undo(_ sender: Any) {
+        solitaireView.undo()
+    }
     
     
     override func viewDidLoad() {
@@ -53,6 +57,24 @@ class ViewController: UIViewController {
             object: nil,
             queue: nil) { (note: Notification) -> Void in
                 self.newGameToolBar.isHidden = false
+        }
+        
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kGameWon),
+            object: nil,
+            queue: nil) { (note: Notification) -> Void in
+                let AlertController = UIAlertController(
+                    title: "Game Won!",
+                    message: "",
+                    preferredStyle: .alert
+                )
+                AlertController.addAction(UIKit.UIAlertAction(
+                    title: "New Game",
+                    style: .default,
+                    handler: { (UIAlertAction) -> Void in
+                        self.solitaireView.resetGame()
+                }))
+                self.present(AlertController, animated: true, completion: nil)
         }
     }
 }

@@ -55,6 +55,7 @@ struct Card : Hashable {
 
 let kOrientationChangedToLandscape = "OrientationChangedToLandscape"
 let kOrientationChangedToPortrait = "OrientationChangedToPortrait"
+let kGameWon = "GameWon"
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

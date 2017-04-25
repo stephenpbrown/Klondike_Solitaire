@@ -94,6 +94,8 @@ class SolitaireView: UIView {
     
     var FAN_OFFSET_ARRAY : [CGFloat] = [CGFloat(0)]
     
+    var deckForAnimating : [Card] = []
+    
     lazy var solitaire : Solitaire!  = { // reference to model in app delegate
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         return appDelegate.solitaire
@@ -293,9 +295,9 @@ class SolitaireView: UIView {
         layoutCards()
     }
     
+    // Layout the cards into their respective layers
     func layoutCards() {
         var z : CGFloat = 1.0
-        
         //... layout cards in waste and foundation stacks ...
         let waste = solitaire.waste
         for card in waste {
@@ -681,6 +683,10 @@ class SolitaireView: UIView {
                     for i in 0 ..< 7 {
                         var tableau = solitaire.tableau[i]
                         
+                        if tableau.count == 1 && tableau.last == dragLayer.card {
+                            break
+                        }
+                        
                         if tableau.isEmpty {
                             canDropCard = solitaire.canDropCard(dragLayer.card, onTableau: i)
                             
@@ -711,6 +717,11 @@ class SolitaireView: UIView {
                                 
                                 if canDropCard {
                                     let oldTableauPosition = solitaire.indexOfCardInTableau(dragLayer.card)
+                                    
+//                                    undoManager?.registerUndo(withTarget: self, handler: { (SolitaireView) -> () in
+//                                        self.layoutCards()
+//                                    })
+                                    
                                     solitaire.didDropCard(dragLayer.card, onTableau: i)
                                     
                                     // Check to see if the card is from a tableau and the card below it can be flipped
@@ -743,6 +754,57 @@ class SolitaireView: UIView {
             }
             draggingCardLayer = nil
         }
+        
+        func scatterCardsAnimChain(_ i : Int) {
+            if i >= 0 {
+                let card = deckForAnimating[i]
+                let clayer = cardToLayerDictionary[card]
+                CATransaction.begin()
+                
+                CATransaction.setDisableActions(true)
+                clayer?.zPosition = topZPosition
+                CATransaction.commit()
+                topZPosition += 1
+                
+                CATransaction.begin()
+                CATransaction.setCompletionBlock { // Rescursive call
+                    scatterCardsAnimChain(i - 1)
+                }
+                CATransaction.setAnimationDuration(0.1)
+                let x = CGFloat(drand48())*bounds.width
+                let y = CGFloat(drand48())*bounds.height
+                clayer?.position = CGPoint(x: x, y: y)
+                clayer?.transform = CATransform3DIdentity
+                CATransaction.commit()
+            }
+        }
+        
+        func scatterCards() {
+            scatterCardsAnimChain(51)
+        }
+        
+        if solitaire.gameWon() {
+            let foundation = solitaire.foundation
+            
+            for i in 0 ..< 4 {
+                for card in foundation[i] {
+                    deckForAnimating.append(card)
+                }
+            }
+            
+            scatterCards()
+            
+            self.isUserInteractionEnabled = false
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5), execute: {
+                self.isUserInteractionEnabled = true
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: kGameWon), object: nil)
+            })
+        }
+    }
+    
+    func undo() {
+        undoManager?.undo()
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {

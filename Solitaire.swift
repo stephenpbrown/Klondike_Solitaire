@@ -46,6 +46,9 @@ class Solitaire {
         }
         
         let shuffledDeck = shuffleDeck(deckOfCards)
+        //var shuffledDeck = deckOfCards
+        
+        //createAlmostWonGame(shuffledDeck)
         setRegions(shuffledDeck)
         
         return shuffledDeck
@@ -106,7 +109,13 @@ class Solitaire {
     
     // All cards have successfully reached a foundation stack.
     func gameWon() -> Bool {
-        return foundation.count == 52
+        var count = 0
+        
+        for i in 0 ..< 4 {
+            count += foundation[i].count
+        }
+        
+        return count == 52
     }
     
     // Checks to see if the card is facing up
@@ -341,6 +350,76 @@ class Solitaire {
         }
         
         stock.reverse()
+    }
+    
+    // A function for making an almost won game for testing purposes
+    func createAlmostWonGame (_ cards : [Card]) {
+        var shuffledDeck = cards
+        
+        for card in shuffledDeck {
+            faceUpCards.insert(card)
+        }
+        
+        var topCards = [Card]()
+        var stack1 = [Card]()
+        var stack2 = [Card]()
+        var stack3 = [Card]()
+        var stack4 = [Card]()
+        
+        for card in shuffledDeck {
+            stack1.append(card)
+            if stack1.count == 13 {
+                break
+            }
+        }
+        
+        shuffledDeck.removeFirst(13)
+        
+        for card in shuffledDeck {
+            stack2.append(card)
+            if stack2.count == 13 {
+                break
+            }
+        }
+        
+        shuffledDeck.removeFirst(13)
+        
+        for card in shuffledDeck {
+            stack3.append(card)
+            if stack3.count == 13 {
+                break
+            }
+        }
+        
+        shuffledDeck.removeFirst(13)
+        
+        for card in shuffledDeck {
+            stack4.append(card)
+            if stack4.count == 13 {
+                break
+            }
+        }
+        
+        shuffledDeck.removeFirst(13)
+        
+        topCards.append(stack1.popLast()!)
+        topCards.append(stack2.popLast()!)
+        topCards.append(stack3.popLast()!)
+        topCards.append(stack4.popLast()!)
+        
+        foundation.append(stack1)
+        foundation.append(stack2)
+        foundation.append(stack3)
+        foundation.append(stack4)
+        
+        for _ in 0 ..< 7 {
+            tableau.append([])
+        }
+        
+        tableau[0].append(topCards.popLast()!)
+        tableau[1].append(topCards.popLast()!)
+        tableau[2].append(topCards.popLast()!)
+        tableau[3].append(topCards.popLast()!)
     }
 
 }
