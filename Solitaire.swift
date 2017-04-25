@@ -46,9 +46,9 @@ class Solitaire {
         }
         
         let shuffledDeck = shuffleDeck(deckOfCards)
-        //var shuffledDeck = deckOfCards
+//        let shuffledDeck = deckOfCards
         
-        //createAlmostWonGame(shuffledDeck)
+//        createAlmostWonGame(shuffledDeck) // Used for debugging
         setRegions(shuffledDeck)
         
         return shuffledDeck
@@ -61,6 +61,8 @@ class Solitaire {
         foundation.removeAll()
         tableau.removeAll()
         faceUpCards.removeAll()
+        
+        _ = dealCards()
     }
 
     // Shuffle a deck of cards

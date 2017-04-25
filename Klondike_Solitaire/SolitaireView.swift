@@ -102,12 +102,12 @@ class SolitaireView: UIView {
     }()
     
     func resetGame() {
-        // Remove all sublayers and redo the allocations
-        // http://stackoverflow.com/questions/10789766/remove-all-sublayers-from-a-view
-        
-        self.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
         solitaire.freshGame()
-        awakeFromNib()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + .microseconds(1), execute: {
+            self.layoutCards()
+        })
+//        layoutCards()
     }
     
     override func awakeFromNib() {
@@ -297,6 +297,7 @@ class SolitaireView: UIView {
     
     // Layout the cards into their respective layers
     func layoutCards() {
+        
         var z : CGFloat = 1.0
         //... layout cards in waste and foundation stacks ...
         let waste = solitaire.waste
@@ -308,12 +309,14 @@ class SolitaireView: UIView {
             z += 1.0
         }
         
+        //z = 1.0
         let stock = solitaire.stock
         for card in stock {
             let cardLayer = cardToLayerDictionary[card]!
             cardLayer.frame = stockLayer.frame
             cardLayer.faceUp = solitaire.isCardFaceUp(card)
             cardLayer.zPosition = z
+            z += 1.0
         }
         
         z = 1.0
@@ -487,10 +490,12 @@ class SolitaireView: UIView {
                         }
                     }
                     
-                } else if solitaire.canFlipCard(card) {
+                }
+                else if solitaire.canFlipCard(card) {
                     flipCard(card, faceUp: true) // update model & view
                 }
-            } else if (layer.name == "stock") {
+            }
+            else if (layer.name == "stock") {
                 solitaire.collectWasteCardsIntoStock()
                 layoutCards()
             }
@@ -683,7 +688,7 @@ class SolitaireView: UIView {
                     for i in 0 ..< 7 {
                         var tableau = solitaire.tableau[i]
                         
-                        if tableau.count == 1 && tableau.last == dragLayer.card {
+                        if tableau.count == 1 && tableau.last == dragLayer.card && dragLayer.card.rank == king {
                             break
                         }
                         
