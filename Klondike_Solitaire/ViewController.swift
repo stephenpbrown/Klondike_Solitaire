@@ -41,7 +41,6 @@ class ViewController: UIViewController {
         solitaireView.undo()
     }
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -50,6 +49,7 @@ class ViewController: UIViewController {
             object: nil,
             queue: nil) { (note: Notification) -> Void in
                 self.newGameToolBar.isHidden = true
+                
         }
         
         NotificationCenter.default.addObserver(

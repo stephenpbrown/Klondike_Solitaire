@@ -345,6 +345,7 @@ class Solitaire {
     func moveCardToFoundation (_ card: Card, onFoundation i : Int) {
         removeCardFromWaste(card)
         removeCardFromTableau(card)
+        removeCardFromFoundation(card) // In case the user moves foundation cards around
         foundation[i].append(card)
     }
     
