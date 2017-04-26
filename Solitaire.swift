@@ -311,16 +311,19 @@ class Solitaire {
         
     }
     
+    // Flips a card in the tableau
     func flipTableauCard(_ card: Card) {
         faceUpCards.insert(card)
     }
     
+    // Moves the stock to the waste
     func stockToWaste(_ card: Card) {
         waste.append(card)
         faceUpCards.insert(card)
         stock.removeLast()
     }
     
+    // Check if the card can be moved to the foundation
     func canMoveCardToFoundation (_ card : Card, onFoundation i : Int) -> Bool {
         
         if foundation[i].isEmpty && card.rank == ace {
@@ -342,6 +345,7 @@ class Solitaire {
         return false
     }
     
+    // Moves a card to the foundation
     func moveCardToFoundation (_ card: Card, onFoundation i : Int) {
         removeCardFromWaste(card)
         removeCardFromTableau(card)
@@ -349,6 +353,7 @@ class Solitaire {
         foundation[i].append(card)
     }
     
+    // Finds the index of a card within the tableau
     func indexOfCardInTableau(_ card: Card) -> Int {
         
         for i in 0 ..< 7 {

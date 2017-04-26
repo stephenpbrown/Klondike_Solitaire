@@ -27,7 +27,7 @@
                                     <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TdP-Vt-56v">
                                         <rect key="frame" x="0.0" y="672" width="414" height="44"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="44" id="Wm0-dN-BTk"/>
+                                            <constraint firstAttribute="height" constant="44" id="l6p-m5-G0E"/>
                                         </constraints>
                                         <items>
                                             <barButtonItem title="New Game" id="fRl-dc-yUI">
@@ -46,9 +46,9 @@
                                 </subviews>
                                 <color key="backgroundColor" red="0.43354780279999999" green="0.86933290159999999" blue="0.3011145482" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="TdP-Vt-56v" secondAttribute="trailing" id="JoZ-3p-1rz"/>
-                                    <constraint firstItem="TdP-Vt-56v" firstAttribute="leading" secondItem="zGK-TE-EvH" secondAttribute="leading" id="qik-iR-afY"/>
-                                    <constraint firstAttribute="bottom" secondItem="TdP-Vt-56v" secondAttribute="bottom" id="rq4-Oj-fK5"/>
+                                    <constraint firstAttribute="trailing" secondItem="TdP-Vt-56v" secondAttribute="trailing" id="AxS-J5-tKP"/>
+                                    <constraint firstItem="TdP-Vt-56v" firstAttribute="leading" secondItem="zGK-TE-EvH" secondAttribute="leading" id="MGB-D7-7ff"/>
+                                    <constraint firstAttribute="bottom" secondItem="TdP-Vt-56v" secondAttribute="bottom" id="eYy-dt-8aV"/>
                                 </constraints>
                             </view>
                         </subviews>

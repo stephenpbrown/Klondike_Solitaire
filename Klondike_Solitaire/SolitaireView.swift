@@ -96,6 +96,8 @@ class SolitaireView: UIView {
     
     var deckForAnimating : [Card] = []
     
+    var orientationString : String = ""
+    
     lazy var solitaire : Solitaire!  = { // reference to model in app delegate
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         return appDelegate.solitaire
@@ -170,128 +172,80 @@ class SolitaireView: UIView {
         
         //... determine size and position of stock, waste, foundation and tableau layers ...
         
-        // Is an iPhone and in portrait mode
-        if portrait && !isIpad {
+        var cardSize = (width: CGFloat(0), height: CGFloat(0))
+        var initialCard = CGFloat(0)
+        var tableauFromFoundationHeight = CGFloat(0)
+        var widthBetweenCards = CGFloat(0)
+        var heightFromTop = CGFloat(0)
+        var foundationStartingPoint = CGFloat(0)
+        
+        if portrait {
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: kOrientationChangedToPortrait), object: nil)
+            orientationString = "portrait"
             
-            let cardSize = (width: 150/3, height: 215/3)
-            
-            // Stock layer position
-            stockLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
-            stockLayer.position = CGPoint(x: 30, y: 50)
-            
-            // Waste layer position
-            wasteLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
-            wasteLayer.position = CGPoint(x: 88, y: 50)
-            
-            // Foundation layer positions
-            var x = 204
-            for i in 0 ..< 4 {
-                foundationLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
-                foundationLayers[i].position = CGPoint(x: x, y: 50)
-                x += 58
+            // If portrait mode and iPad
+            if isIpad {
+                cardSize = (width: width/9, height: height/8)
+                heightFromTop = 100
+            }
+            // If portrait mode and iPhone
+            else {
+                cardSize = (width: width/9, height: height/11)
+                heightFromTop = 50
             }
             
-            // Tableau layer positions
-            x = 30
-            for i in 0 ..< 7 {
-                tableauLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
-                tableauLayers[i].position = CGPoint(x: x, y: 150)
-                x += 58
-            }
+            initialCard = cardSize.width/2
+            tableauFromFoundationHeight = initialCard + cardSize.height*2
+            widthBetweenCards = cardSize.width/4
+            foundationStartingPoint = initialCard*8 + widthBetweenCards*2
         }
-        // Is an iPad and is in portrait mode
-        else if portrait && isIpad {
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: kOrientationChangedToPortrait), object: nil)
-            
-            let cardSize = (width: 150/2, height: 215/2)
-            
-            // Stock layer position
-            stockLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
-            stockLayer.position = CGPoint(x: 80, y: 100)
-            
-            // Waste layer position
-            wasteLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
-            wasteLayer.position = CGPoint(x: 180, y: 100)
-            
-            // Foundation layer positions
-            var x = 380
-            for i in 0 ..< 4 {
-                foundationLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
-                foundationLayers[i].position = CGPoint(x: x, y: 100)
-                x += 100
-            }
-            
-            // Tableau layer positions
-            x = 80
-            for i in 0 ..< 7 {
-                tableauLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
-                tableauLayers[i].position = CGPoint(x: x, y: 250)
-                x += 100
-            }
-        }
-        // Is an iPad and is in landscape mode
-        else if !portrait && isIpad {
+        else {
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: kOrientationChangedToLandscape), object: nil)
+            orientationString = "landscape"
             
-            let cardSize = (width: 190/2, height: 265/2)
-            
-            // Stock layer position
-            stockLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
-            stockLayer.position = CGPoint(x: 100, y: 100)
-            
-            // Waste layer position
-            wasteLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
-            wasteLayer.position = CGPoint(x: 235, y: 100)
-            
-            // Foundation layer positions
-            var x = 505
-            for i in 0 ..< 4 {
-                foundationLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
-                foundationLayers[i].position = CGPoint(x: x, y: 100)
-                x += 135
+            // If landscape mode and iPad
+            if isIpad {
+                cardSize = (width: width/10, height: height/5)
+                initialCard = cardSize.width/2
+                tableauFromFoundationHeight = initialCard*3 + cardSize.height*(3/4)+4
+                widthBetweenCards = cardSize.width/2.6
+                foundationStartingPoint = initialCard*8.5 + widthBetweenCards*2
+                heightFromTop = 100
             }
-            
-            // Tableau layer positions
-            x = 100
-            for i in 0 ..< 7 {
-                tableauLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
-                tableauLayers[i].position = CGPoint(x: x, y: 270)
-                x += 135
-            }
-        }
-        // Is an iPhone and in landscape mode
-        else
-        {
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: kOrientationChangedToLandscape), object: nil)
-            
-            let cardSize = (width: 120/2, height: 175/2)
-            
-            // Stock layer position
-            stockLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
-            stockLayer.position = CGPoint(x: 70, y: 50)
-            
-            // Waste layer position
-            wasteLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
-            wasteLayer.position = CGPoint(x: 170, y: 50)
-            
-            // Foundation layer positions
-            var x = 370
-            for i in 0 ..< 4 {
-                foundationLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
-                foundationLayers[i].position = CGPoint(x: x, y: 50)
-                x += 100
-            }
-            
-            // Tableau layer positions
-            x = 70
-            for i in 0 ..< 7 {
-                tableauLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
-                tableauLayers[i].position = CGPoint(x: x, y: 150)
-                x += 100
+            // if landscape mode and iPhone
+            else {
+                cardSize = (width: width/13, height: height/5)
+                initialCard = cardSize.width/2
+                tableauFromFoundationHeight = initialCard*3 + cardSize.height*(3/4)+4
+                widthBetweenCards = cardSize.width*(3/4)
+                foundationStartingPoint = initialCard*10 + widthBetweenCards*2
+                heightFromTop = 50
             }
         }
         
+        // Stock layer position
+        stockLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
+        stockLayer.position = CGPoint(x: initialCard+widthBetweenCards, y: heightFromTop)
+        
+        // Waste layer position
+        wasteLayer.bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
+        wasteLayer.position = CGPoint(x: initialCard*3+widthBetweenCards*2, y: heightFromTop)
+        
+        // Foundation layer positions
+        var x = foundationStartingPoint
+        for i in 0 ..< 4 {
+            foundationLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
+            foundationLayers[i].position = CGPoint(x: x, y: heightFromTop)
+            x += cardSize.width + widthBetweenCards
+        }
+        
+        // Tableau layer positions
+        x = initialCard + widthBetweenCards
+        for i in 0 ..< 7 {
+            tableauLayers[i].bounds = CGRect(x: 0, y: 0, width: cardSize.width, height: cardSize.height)
+            tableauLayers[i].position = CGPoint(x: x, y: tableauFromFoundationHeight)
+            x += cardSize.width + widthBetweenCards
+        }
         layoutCards()
     }
     
@@ -341,25 +295,16 @@ class SolitaireView: UIView {
             var fanOffset = FAN_OFFSET_ARRAY[i] * cardSize.height
             
             let tableau = solitaire.tableau[i]
-            let lowestPointCard = tableau.last
-            var lowestPointLayer = CALayer()
-            var lowestPoint = CGFloat(0)
-            let height = bounds.size.height
+            let cardCount = tableau.count
             
-            if lowestPointCard != nil {
-                lowestPointLayer = cardToLayerDictionary[lowestPointCard!]!
-                lowestPoint = lowestPointLayer.position.y + cardSize.height
-            }
-            
-            if lowestPoint > height {
+            // Checks if the card count is greater than 9 and is an iPhone in landscape, then will shrink the fan size
+            if cardCount > 9 && orientationString == "landscape" {
                 FAN_OFFSET_ARRAY[i] = CGFloat(0.2)
                 fanOffset = FAN_OFFSET_ARRAY[i] * cardSize.height
-                cardCount[i] = tableau.count
             }
-            else if cardCount[i] > tableau.count {
+            else {
                 FAN_OFFSET_ARRAY[i] = CGFloat(0.3)
                 fanOffset = FAN_OFFSET_ARRAY[i] * cardSize.height
-                cardCount[i] = tableau.count
             }
             
             let tableauOrigin = tableauLayers[i].frame.origin
