@@ -37,6 +37,18 @@ struct Card : Hashable {
     let suit : Suit  // .SPADES ... .HEARTS
     let rank : UInt8 // 1 ... 13
     
+    init(dictionary dict : [String : AnyObject]) { // to retrieve from plist
+        suit = Suit(rawValue: (dict["suit"] as! NSNumber).uint8Value)!
+        rank = (dict["rank"] as! NSNumber).uint8Value
+    }
+    
+    func toDictionary() -> [String : AnyObject] { // to store in plist
+        return [
+            "suit" : NSNumber(value: suit.rawValue as UInt8),
+            "rank" : NSNumber(value: rank as UInt8)
+        ]
+    }
+    
     var hashValue: Int {
         return Int(suit.rawValue*13 + rank - 1) // perfect hash to 0 ... 51
     }
@@ -56,6 +68,11 @@ struct Card : Hashable {
 let kOrientationChangedToLandscape = "OrientationChangedToLandscape"
 let kOrientationChangedToPortrait = "OrientationChangedToPortrait"
 let kGameWon = "GameWon"
+
+func sandboxArchivePath() -> String {
+    let dir = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first! as NSString
+    return dir.appendingPathComponent("savedSolitaire.plist")
+}
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -79,6 +96,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        
+//        var storedSolitaire = solitaire?.toDictionary()
+//        let archiveName = sandboxArchivePath()
+//        storedSolitaire.write(toFile: archiveName, atomically: true)
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {

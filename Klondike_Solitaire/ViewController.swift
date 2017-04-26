@@ -64,7 +64,7 @@ class ViewController: UIViewController {
             object: nil,
             queue: nil) { (note: Notification) -> Void in
                 let AlertController = UIAlertController(
-                    title: "Game Won!",
+                    title: "Congratulations! Game Won!",
                     message: "",
                     preferredStyle: .alert
                 )

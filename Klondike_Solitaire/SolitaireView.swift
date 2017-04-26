@@ -104,10 +104,10 @@ class SolitaireView: UIView {
     func resetGame() {
         solitaire.freshGame()
         
+        // Quick delay that allows the cards to be consistently animated when a new game is selected
         DispatchQueue.main.asyncAfter(deadline: .now() + .microseconds(1), execute: {
             self.layoutCards()
         })
-//        layoutCards()
     }
     
     override func awakeFromNib() {
@@ -319,7 +319,7 @@ class SolitaireView: UIView {
             z += 1.0
         }
         
-        z = 1.0
+        //z = 1.0
         let cardSize = stockLayer.bounds.size
         for i in 0 ..< 4 {
             let foundation = solitaire.foundation[i]
@@ -335,7 +335,7 @@ class SolitaireView: UIView {
             }
         }
         
-        z = 1.0
+        //z = 1.0
         //let fanOffset = FAN_OFFSET * cardSize.height
         for i in 0 ..< 7 {
             var fanOffset = FAN_OFFSET_ARRAY[i] * cardSize.height
@@ -344,8 +344,7 @@ class SolitaireView: UIView {
             let lowestPointCard = tableau.last
             var lowestPointLayer = CALayer()
             var lowestPoint = CGFloat(0)
-            let height = bounds.size.height + 30
-            
+            let height = bounds.size.height
             
             if lowestPointCard != nil {
                 lowestPointLayer = cardToLayerDictionary[lowestPointCard!]!
@@ -688,29 +687,29 @@ class SolitaireView: UIView {
                     for i in 0 ..< 7 {
                         var tableau = solitaire.tableau[i]
                         
-                        if tableau.count == 1 && tableau.last == dragLayer.card && dragLayer.card.rank == king {
-                            break
-                        }
-                        
-                        if tableau.isEmpty {
-                            canDropCard = solitaire.canDropCard(dragLayer.card, onTableau: i)
+                        if tableau.isEmpty && dragLayer.card.rank == king {
+                            let cardLayer = cardToLayerDictionary[dragLayer.card]!
                             
-                            if canDropCard {
-                                let oldTableauPosition = solitaire.indexOfCardInTableau(dragLayer.card)
-                                solitaire.didDropCard(dragLayer.card, onTableau: i)
+                            if cardLayer.frame.intersects(tableauLayers[i].frame) {
+                                canDropCard = solitaire.canDropCard(dragLayer.card, onTableau: i)
                                 
-                                // Check to see if the card is from a tableau and the card below it can be flipped
-                                if oldTableauPosition != -1 && !solitaire.tableau[oldTableauPosition].isEmpty {
-                                    tableau = solitaire.tableau[oldTableauPosition]
+                                if canDropCard {
+                                    let oldTableauPosition = solitaire.indexOfCardInTableau(dragLayer.card)
+                                    solitaire.didDropCard(dragLayer.card, onTableau: i)
                                     
-                                    let canFlipCard = solitaire.canFlipCard(tableau.last!)
-                                    
-                                    if canFlipCard {
-                                        solitaire.flipTableauCard(tableau.last!)
+                                    // Check to see if the card is from a tableau and the card below it can be flipped
+                                    if oldTableauPosition != -1 && !solitaire.tableau[oldTableauPosition].isEmpty {
+                                        tableau = solitaire.tableau[oldTableauPosition]
+                                        
+                                        let canFlipCard = solitaire.canFlipCard(tableau.last!)
+                                        
+                                        if canFlipCard {
+                                            solitaire.flipTableauCard(tableau.last!)
+                                        }
                                     }
+                                    layoutCards()
+                                    break
                                 }
-                                layoutCards()
-                                break
                             }
                         }
                         
@@ -722,10 +721,6 @@ class SolitaireView: UIView {
                                 
                                 if canDropCard {
                                     let oldTableauPosition = solitaire.indexOfCardInTableau(dragLayer.card)
-                                    
-//                                    undoManager?.registerUndo(withTarget: self, handler: { (SolitaireView) -> () in
-//                                        self.layoutCards()
-//                                    })
                                     
                                     solitaire.didDropCard(dragLayer.card, onTableau: i)
                                     
@@ -775,7 +770,7 @@ class SolitaireView: UIView {
                 CATransaction.setCompletionBlock { // Rescursive call
                     scatterCardsAnimChain(i - 1)
                 }
-                CATransaction.setAnimationDuration(0.1)
+                CATransaction.setAnimationDuration(0.095)
                 let x = CGFloat(drand48())*bounds.width
                 let y = CGFloat(drand48())*bounds.height
                 clayer?.position = CGPoint(x: x, y: y)
