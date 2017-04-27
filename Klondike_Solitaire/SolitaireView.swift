@@ -180,7 +180,6 @@ class SolitaireView: UIView {
         var foundationStartingPoint = CGFloat(0)
         
         if portrait {
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: kOrientationChangedToPortrait), object: nil)
             orientationString = "portrait"
             
             // If portrait mode and iPad
@@ -200,7 +199,6 @@ class SolitaireView: UIView {
             foundationStartingPoint = initialCard*8 + widthBetweenCards*2
         }
         else {
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: kOrientationChangedToLandscape), object: nil)
             orientationString = "landscape"
             
             // If landscape mode and iPad
