@@ -298,7 +298,7 @@ class SolitaireView: UIView {
             let cardCount = tableau.count
             
             // Checks if the card count is greater than 9 and is an iPhone in landscape, then will shrink the fan size
-            if cardCount > 9 && orientationString == "landscape" {
+            if cardCount > 10 && orientationString == "landscape" {
                 FAN_OFFSET_ARRAY[i] = CGFloat(0.2)
                 fanOffset = FAN_OFFSET_ARRAY[i] * cardSize.height
             }
@@ -448,7 +448,8 @@ class SolitaireView: UIView {
         
         draggingCardLayer!.position = position
         if let draggingFan = draggingFan {
-            let off = 0.4*draggingCardLayer!.bounds.size.height
+            let indexOfCard = solitaire.indexOfCardInTableau((draggingCardLayer?.card)!) // Index so the fan offset will match the current offset
+            let off = FAN_OFFSET_ARRAY[indexOfCard]*draggingCardLayer!.bounds.size.height
             let n = draggingFan.count
             for i in 1 ..< n {
                 let card = draggingFan[i]
