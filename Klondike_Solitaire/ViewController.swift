@@ -44,20 +44,20 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        NotificationCenter.default.addObserver(
-            forName: NSNotification.Name(rawValue: kOrientationChangedToLandscape),
-            object: nil,
-            queue: nil) { (note: Notification) -> Void in
-                self.newGameToolBar.isHidden = true
-                
-        }
-        
-        NotificationCenter.default.addObserver(
-            forName: NSNotification.Name(rawValue: kOrientationChangedToPortrait),
-            object: nil,
-            queue: nil) { (note: Notification) -> Void in
-                self.newGameToolBar.isHidden = false
-        }
+//        NotificationCenter.default.addObserver(
+//            forName: NSNotification.Name(rawValue: kOrientationChangedToLandscape),
+//            object: nil,
+//            queue: nil) { (note: Notification) -> Void in
+//                self.newGameToolBar.isHidden = true
+//                
+//        }
+//        
+//        NotificationCenter.default.addObserver(
+//            forName: NSNotification.Name(rawValue: kOrientationChangedToPortrait),
+//            object: nil,
+//            queue: nil) { (note: Notification) -> Void in
+//                self.newGameToolBar.isHidden = false
+//        }
         
         NotificationCenter.default.addObserver(
             forName: NSNotification.Name(rawValue: kGameWon),
