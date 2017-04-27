@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina5_5" orientation="portrait">
+    <device id="ipad9_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -18,15 +18,15 @@
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zGK-TE-EvH" customClass="SolitaireView" customModule="Klondike_Solitaire" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="20" width="414" height="716"/>
+                                <rect key="frame" x="0.0" y="64" width="768" height="960"/>
                                 <color key="backgroundColor" red="0.43354780279999999" green="0.86933290159999999" blue="0.3011145482" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TdP-Vt-56v">
-                                <rect key="frame" x="0.0" y="692" width="414" height="44"/>
+                                <rect key="frame" x="0.0" y="20" width="768" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="2JX-kv-jsN"/>
                                 </constraints>
@@ -49,15 +49,31 @@
                         <constraints>
                             <constraint firstItem="zGK-TE-EvH" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="3BK-dP-aBh"/>
                             <constraint firstItem="TdP-Vt-56v" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="3dw-y0-d60"/>
+                            <constraint firstItem="zGK-TE-EvH" firstAttribute="top" secondItem="TdP-Vt-56v" secondAttribute="bottom" id="KIl-t0-pAX"/>
                             <constraint firstAttribute="trailing" secondItem="TdP-Vt-56v" secondAttribute="trailing" id="Q9K-mY-Xxr"/>
                             <constraint firstAttribute="trailing" secondItem="zGK-TE-EvH" secondAttribute="trailing" id="Tjk-MP-6S8"/>
+                            <constraint firstItem="TdP-Vt-56v" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="ZC6-el-b3W"/>
                             <constraint firstAttribute="bottom" secondItem="TdP-Vt-56v" secondAttribute="bottom" id="ZbQ-Cy-Yhx"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="zGK-TE-EvH" secondAttribute="bottom" id="cBv-TH-8j9"/>
                             <constraint firstItem="zGK-TE-EvH" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="tPF-ja-1nN"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="ZC6-el-b3W"/>
+                                <exclude reference="KIl-t0-pAX"/>
+                            </mask>
+                        </variation>
                         <variation key="heightClass=compact">
                             <mask key="subviews">
                                 <exclude reference="TdP-Vt-56v"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=regular">
+                            <mask key="constraints">
+                                <include reference="ZC6-el-b3W"/>
+                                <exclude reference="ZbQ-Cy-Yhx"/>
+                                <include reference="KIl-t0-pAX"/>
+                                <exclude reference="tPF-ja-1nN"/>
                             </mask>
                         </variation>
                     </view>
@@ -69,7 +85,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="37" y="48"/>
+            <point key="canvasLocation" x="36.71875" y="47.4609375"/>
         </scene>
     </scenes>
 </document>
