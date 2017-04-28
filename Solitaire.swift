@@ -16,29 +16,32 @@ class Solitaire {
     var tableau : [[Card]]
     fileprivate var faceUpCards : Set<Card>;
     
-    init(dictionary dict : [String : AnyObject]) { // for retrieving from plist
-        stock = (dict["stock"] as! [Card])
-        
-        waste = []
-        foundation = [] //Array(repeating: [Card](), count: 52)
-        
-        self.tableau = [] //Array(repeating: [Card](), count: 52)
-        
-        faceUpCards = []
-    }
+    //
+    // Persistence in progress
+    //
+//    init(dictionary dict : [String : AnyObject]) { // for retrieving from plist
+//        stock = (dict["stock"] as! [Card])
+//        
+//        waste = []
+//        foundation = [] //Array(repeating: [Card](), count: 52)
+//        
+//        self.tableau = [] //Array(repeating: [Card](), count: 52)
+//        
+//        faceUpCards = []
+//    }
     
-    func toDictionary() -> [String : AnyObject] {  // for storing in plist
-//        var dict = [String : AnyObject]()
+//    func toDictionary() -> [String : AnyObject] {  // for storing in plist
+////        var dict = [String : AnyObject]()
+////        
+////        dict["stock"] = NSArray(value: stock)
+////        
+////        return dict
 //        
-//        dict["stock"] = NSArray(value: stock)
-//        
-//        return dict
-        
-        return [
-            "stock" : NSArray(array: stock),
-//            "waste" : NSArray(array: waste)
-        ]
-    }
+//        return [
+//            "stock" : NSArray(array: stock),
+////            "waste" : NSArray(array: waste)
+//        ]
+//    }
     
     // Create new Solitaire game model object.
     init() {

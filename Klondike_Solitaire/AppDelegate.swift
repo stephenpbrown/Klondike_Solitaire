@@ -39,17 +39,20 @@ struct Card : Hashable {
     let suit : Suit  // .SPADES ... .HEARTS
     let rank : UInt8 // 1 ... 13
     
-    init(dictionary dict : [String : AnyObject]) { // to retrieve from plist
-        suit = Suit(rawValue: (dict["suit"] as! NSNumber).uint8Value)!
-        rank = (dict["rank"] as! NSNumber).uint8Value
-    }
-    
-    func toDictionary() -> [String : AnyObject] { // to store in plist
-        return [
-            "suit" : NSNumber(value: suit.rawValue as UInt8),
-            "rank" : NSNumber(value: rank as UInt8)
-        ]
-    }
+    //
+    // Persistence in progress
+    //
+//    init(dictionary dict : [String : AnyObject]) { // to retrieve from plist
+//        suit = Suit(rawValue: (dict["suit"] as! NSNumber).uint8Value)!
+//        rank = (dict["rank"] as! NSNumber).uint8Value
+//    }
+//    
+//    func toDictionary() -> [String : AnyObject] { // to store in plist
+//        return [
+//            "suit" : NSNumber(value: suit.rawValue as UInt8),
+//            "rank" : NSNumber(value: rank as UInt8)
+//        ]
+//    }
     
     var hashValue: Int {
         return Int(suit.rawValue*13 + rank - 1) // perfect hash to 0 ... 51
