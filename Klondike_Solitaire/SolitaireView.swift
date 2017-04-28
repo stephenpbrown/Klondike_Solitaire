@@ -113,6 +113,7 @@ class SolitaireView: UIView {
     }
     
     override func awakeFromNib() {
+        //    ... create and add waste, foundation, and tableau sublayers ...
         self.layer.name = "background"
         
         stockLayer = CALayer()
@@ -120,8 +121,7 @@ class SolitaireView: UIView {
         stockLayer.backgroundColor =
             UIColor(colorLiteralRed: 0.0, green: 0.5, blue: 0.0, alpha: 0.3).cgColor
         self.layer.addSublayer(stockLayer)
-            
-        //    ... create and add waste, foundation, and tableau sublayers ...
+        
         wasteLayer = CALayer()
         wasteLayer.name = "waste"
         wasteLayer.backgroundColor =
@@ -251,7 +251,7 @@ class SolitaireView: UIView {
     func layoutCards() {
         
         var z : CGFloat = 1.0
-        //... layout cards in waste and foundation stacks ...
+        // Layout waste cards
         let waste = solitaire.waste
         var i = CGFloat(1)
         var count = waste.count
@@ -281,7 +281,7 @@ class SolitaireView: UIView {
             }
         }
         
-        //z = 1.0
+        // Layout stock cards
         let stock = solitaire.stock
         for card in stock {
             let cardLayer = cardToLayerDictionary[card]!
@@ -291,7 +291,7 @@ class SolitaireView: UIView {
             z += 1.0
         }
         
-        //z = 1.0
+        // Layout foundation cards
         let cardSize = stockLayer.bounds.size
         for i in 0 ..< 4 {
             let foundation = solitaire.foundation[i]
@@ -307,8 +307,7 @@ class SolitaireView: UIView {
             }
         }
         
-        //z = 1.0
-        //let fanOffset = FAN_OFFSET * cardSize.height
+        // Layout tableau cards
         for i in 0 ..< 7 {
             var fanOffset = FAN_OFFSET_ARRAY[i] * cardSize.height
             
@@ -703,7 +702,7 @@ class SolitaireView: UIView {
             draggingCardLayer = nil
         }
         
-        // Funcation that scatters cards around the window when the player wins
+        // Function that scatters cards around the window when the player wins
         func scatterCardsAnimChain(_ i : Int) {
             if i >= 0 {
                 let card = deckForAnimating[i]
@@ -758,7 +757,7 @@ class SolitaireView: UIView {
     }
     
     func undo() {
-        undoManager?.undo()
+
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {

@@ -266,7 +266,6 @@ class Solitaire {
         let val2 = lowerCardOnFan?.suit.hashValue
         let addition = val1 + val2!
         
-        // TODO: Fix why sometimes the lowerCard and card are the same card
         if ((firstCardOnTableau?.rank)! - 1) == lowerCardOnFan?.rank {
             if addition > 1 && addition < 5 && val1 != val2 {
                 return true
@@ -360,7 +359,6 @@ class Solitaire {
         
         let lowerCard = foundation[i].last
         
-        // TODO: Fix why sometimes the lowerCard and card are the same card
         if ((lowerCard?.rank)! + 1) == card.rank {
             if (lowerCard?.suit.hashValue) == card.suit.hashValue {
                 return true
