@@ -253,12 +253,32 @@ class SolitaireView: UIView {
         var z : CGFloat = 1.0
         //... layout cards in waste and foundation stacks ...
         let waste = solitaire.waste
+        var i = CGFloat(1)
+        var count = waste.count
         for card in waste {
             let cardLayer = cardToLayerDictionary[card]!
-            cardLayer.frame = wasteLayer.frame
-            cardLayer.faceUp = solitaire.isCardFaceUp(card)
-            cardLayer.zPosition = z
-            z += 1.0
+            
+            if count <= 3 {
+                let cardSize = wasteLayer.bounds.size
+                let wasteOrigin = wasteLayer.frame.origin
+                cardLayer.frame = CGRect(
+                    x: wasteOrigin.x,
+                    y: wasteOrigin.y,
+                    width: cardSize.width*i,
+                    height: cardSize.height)
+                cardLayer.faceUp = solitaire.isCardFaceUp(card)
+                cardLayer.zPosition = z
+                z += 1.0
+                i += 0.5
+            }
+            else {
+                let cardLayer = cardToLayerDictionary[card]!
+                cardLayer.frame = wasteLayer.frame
+                cardLayer.faceUp = solitaire.isCardFaceUp(card)
+                cardLayer.zPosition = z
+                z += 1.0
+                count -= 1
+            }
         }
         
         //z = 1.0
@@ -378,6 +398,7 @@ class SolitaireView: UIView {
                         draggingCardLayer!.zPosition = topZPosition
                         topZPosition += 1
                         moveToFoundation(cardLayer)
+                        layoutCards()
                         return
                     }
                     //...else initiate drag of card (or stack of cards) by setting
@@ -419,12 +440,21 @@ class SolitaireView: UIView {
     }
     
     //
-    // Check to see if the card can be flipped
+    // Check to see if the card can be flipped and then flip it
     //
     func flipCard(_ card : Card, faceUp : Bool) {
         
-        if solitaire.stock.contains(card) {
-            solitaire.stockToWaste(card)
+        if solitaire.canDealCard(card) {
+            for _ in 0 ..< 3 {
+                let didDealCard = solitaire.didDealCard()
+                
+                if didDealCard {
+//                    layoutCards()
+                }
+                else {
+                    break
+                }
+            }
         }
         else {
             for i in 0 ..< 7 {
@@ -689,7 +719,7 @@ class SolitaireView: UIView {
                 CATransaction.setCompletionBlock { // Rescursive call
                     scatterCardsAnimChain(i - 1)
                 }
-                CATransaction.setAnimationDuration(0.095)
+                CATransaction.setAnimationDuration(0.099)
                 let x = CGFloat(drand48())*bounds.width
                 let y = CGFloat(drand48())*bounds.height
                 clayer?.position = CGPoint(x: x, y: y)

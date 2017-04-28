@@ -36,7 +36,7 @@ class Solitaire {
         
         return [
             "stock" : NSArray(array: stock),
-            "waste" : NSArray(array: waste)
+//            "waste" : NSArray(array: waste)
         ]
     }
     
@@ -44,10 +44,8 @@ class Solitaire {
     init() {
         stock = []
         waste = []
-        foundation = [] //Array(repeating: [Card](), count: 52)
-        
-        self.tableau = [] //Array(repeating: [Card](), count: 52)
-        
+        foundation = []
+        tableau = []
         faceUpCards = []
     }
     
@@ -62,10 +60,11 @@ class Solitaire {
         }
         
         let shuffledDeck = shuffleDeck(deckOfCards)
-//        let shuffledDeck = deckOfCards
-        
-//        createAlmostWonGame(shuffledDeck) // Used for debugging
         setRegions(shuffledDeck)
+        
+        // Used for debugging
+//        let shuffledDeck = deckOfCards
+//        createAlmostWonGame(shuffledDeck)
         
         return shuffledDeck
     }
@@ -302,13 +301,21 @@ class Solitaire {
     }
     
     // Can user move top card from stock to waste?
-    func canDealCard() -> Bool {
-        return false
+    func canDealCard(_ card : Card) -> Bool {
+        return stock.contains(card)
     }
     
     // Uses did move the top stack card to the waste.
-    func didDealCard() {
-        
+    func didDealCard() -> Bool {
+        if stock.isEmpty {
+            return false
+        }
+        else {
+            let card = stock.popLast()
+            waste.append(card!)
+            faceUpCards.insert(card!)
+            return true
+        }
     }
     
     // Flips a card in the tableau
@@ -318,9 +325,24 @@ class Solitaire {
     
     // Moves the stock to the waste
     func stockToWaste(_ card: Card) {
+        
         waste.append(card)
         faceUpCards.insert(card)
         stock.removeLast()
+        
+//        for i in 0 ..< 3 {
+//            if stock.isEmpty {
+//                break
+//            }
+//            let card1 = stock.popLast()
+//            waste.append(card1!)
+//            faceUpCards.insert(card1!)
+////            stock.removeLast()
+//        }
+        
+//        waste.append(card)
+//        faceUpCards.insert(card)
+//        stock.removeLast()
     }
     
     // Check if the card can be moved to the foundation

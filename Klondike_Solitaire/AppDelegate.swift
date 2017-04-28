@@ -6,6 +6,8 @@
 //  Copyright © 2017 Stephen Paul Brown. All rights reserved.
 //
 
+// Icon used from: http://static.memrise.com/uploads/course_photos/8875791000150814162900.png
+
 import UIKit
 
 enum Suit : UInt8 {
