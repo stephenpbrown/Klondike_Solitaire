@@ -4,8 +4,8 @@ Project Title: Klondike Solitaire
 Author: 
 ----------
 >* Name: Stephen Brown 
-* Email: stephen.p.brown@wsu.edu 
-* SID: 11466405
+>* Email: stephen.p.brown@wsu.edu 
+>* SID: 11466405
 
 Klondike Solitaire Project:
 ----------
@@ -14,8 +14,8 @@ Klondike Solitaire Project:
 Build/Run Info:
 ----------
 >1. Choose a directory to clone repository into
-2. run "git clone git@gitlab.encs.vancouver.wsu.edu:aerologic/Klondike_Solitaire.git" in terminal
-3. cd into folder
-4. Open Xcode and navigate to the project using file->open
-5. Once project loads into Xcode, hit the "play/build" button in the upper left cornerin order to build and run the program. (NOTE: If using the encs lab computers, make sure to run /etc/devme, /etc/homeme, and /etc/simme in order to use the similators within Xcode)
-6. Project will load after a successful build and will be usable within the Xcode similator
+>2. run "git clone git@gitlab.encs.vancouver.wsu.edu:aerologic/Klondike_Solitaire.git" in terminal
+>3. cd into folder
+>4. Open Xcode and navigate to the project using file->open
+>5. Once project loads into Xcode, hit the "play/build" button in the upper left cornerin order to build and run the program. (NOTE: If using the encs lab computers, make sure to run /etc/devme, /etc/homeme, and /etc/simme in order to use the similators within Xcode)
+>6. Project will load after a successful build and will be usable within the Xcode similator
